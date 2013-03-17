@@ -13,14 +13,18 @@ class PPConfigManager {
 	 */
 	private static $instance;
 
-	private function __construct(){
+	private function __construct() {
 		if(defined('PP_CONFIG_PATH')) {
-			$configFile = constant('PP_CONFIG_PATH') . '/sdk_config.ini';
+                    if (file_exists(PP_CONFIG_PATH . '/sdk_config.php')) {
+                        $configFile = PP_CONFIG_PATH . '/sdk_config.php';
+                    } else {
+                        $configFile = PP_CONFIG_PATH . '/sdk_config.ini';
+                    }
 		} else {		
-			$configFile = implode(DIRECTORY_SEPARATOR,
-				array(dirname(__FILE__), "..", "config", "sdk_config.ini"));
-		}
-		$this->load($configFile);
+                    $configFile = implode(DIRECTORY_SEPARATOR,
+                        array(dirname(__FILE__), "..", "config", "sdk_config.ini"));
+                }
+                $this->load($configFile);
 	}
 
 	// create singleton object for PPConfigManager
@@ -34,11 +38,15 @@ class PPConfigManager {
 
 	//used to load the file
 	private function load($fileName) {
-
-		$this->config = @parse_ini_file($fileName);
-		if($this->config == NULL || count($this->config) == 0) {
-			throw new PPConfigurationException("Config file $fileName not found","303");
-		}
+                if (strtolower(substr($fileName, -3)) == 'php') {
+                    include($fileName);
+                    $this->config = ($config) ? $config : array();
+                } else {
+                    $this->config = @parse_ini_file($fileName);
+                    if($this->config == NULL || count($this->config) == 0) {
+                            throw new PPConfigurationException("Config file $fileName not found","303");
+                    }
+                }
 	}
 
 	/**
