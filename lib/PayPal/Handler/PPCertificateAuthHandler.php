@@ -15,13 +15,7 @@ class PPCertificateAuthHandler implements IPPHandler {
 		
 		$httpConfig->setSSLCert($credential->getCertificatePath(), $credential->getCertificatePassPhrase());
 		$thirdPartyAuth = $credential->getThirdPartyAuthorization();
-		if($thirdPartyAuth && $thirdPartyAuth instanceof PPTokenAuthorization) {
-			$httpConfig->addHeader('X-PAYPAL-AUTHORIZATION',
-					AuthSignature::generateFullAuthString($credential->getUsername(), $credential->getPassword(),
-							$thirdPartyAuth->getAccessToken(), $thirdPartyAuth->getTokenSecret(),
-							$httpConfig->getMethod(), $httpConfig->getUrl()));
-		}
-		
+	
 		switch($request->getBindingType()) {
 			case 'NV':
 				if(!$thirdPartyAuth || !$thirdPartyAuth instanceof PPTokenAuthorization) {

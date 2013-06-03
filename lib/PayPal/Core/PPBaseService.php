@@ -49,45 +49,6 @@ class PPBaseService {
 		$this->lastResponse = $lastRspns;
 	}
 
-	public function getAccessToken() {
-		return $this->accessToken;
-	}
-	/**
-	 * @deprecated
-	 * For using third party token permissions, 
-	 * create a ICredential object and pass it to the
-	 * call() method instead. 
-	 *
-	 *<pre>
-	 * $service = new *Service();
-	 * $cred = new PPSignatureCredential("username", "password", "signature");
-	 * $cred->setThirdPartyAuthorization(new PPTokenAuthorization("accessToken", "tokenSecret"));
-	 * $service->SomeOperation($reqObject, $cred); 
-	 *</pre>	 
-	 */
- 	public function setAccessToken($accessToken) {
-		$this->accessToken = $accessToken;
-	}
-	public function getTokenSecret() {
-		return $this->tokenSecret;
-	}
-	/**
-	 * @deprecated
-	 * For using third party token permissions, 
-	 * create a ICredential object and pass it to the
-	 * call() method instead. 
-	 *
-	 *<pre>
-	 * $service = new *Service();
-	 * $cred = new PPSignatureCredential("username", "password", "signature");
-	 * $cred->setThirdPartyAuthorization(new PPTokenAuthorization("accessToken", "tokenSecret"));
-	 * $service->SomeOperation($reqObject, $cred); 
-	 *</pre>	 
-	 */
-	public function setTokenSecret($tokenSecret) {
-		$this->tokenSecret = $tokenSecret;
-	}
-
 	public function __construct($serviceName, $serviceBinding, $handlers=array(), $config = null) {
 		$this->serviceName = $serviceName;
 		$this->serviceBinding = $serviceBinding;

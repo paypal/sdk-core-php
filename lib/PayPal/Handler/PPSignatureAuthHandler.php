@@ -15,13 +15,7 @@ class PPSignatureAuthHandler implements IPPHandler {
 			return;
 		}		
 		$thirdPartyAuth = $credential->getThirdPartyAuthorization();
-		if($thirdPartyAuth && $thirdPartyAuth instanceof PPTokenAuthorization) {
-			$httpConfig->addHeader('X-PAYPAL-AUTHORIZATION',
-					AuthSignature::generateFullAuthString($credential->getUsername(), $credential->getPassword(),
-							$thirdPartyAuth->getAccessToken(), $thirdPartyAuth->getTokenSecret(),
-							$httpConfig->getMethod(), $httpConfig->getUrl()));
-		}
-		
+
 		switch($request->getBindingType()) {
 			case 'NV':
 				if(!$thirdPartyAuth || !$thirdPartyAuth instanceof PPTokenAuthorization) {
