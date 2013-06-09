@@ -79,8 +79,7 @@ class PPBaseService {
 	public function call($port, $method, $requestObject, $apiUserName = NULL) {		
 		$service = new PPAPIService($port, $this->serviceName, 
 				$this->serviceBinding, $this->handlers,$this->config);		
-		$ret = $service->makeRequest($method, $requestObject, $apiUserName, 
-				$this->accessToken, $this->tokenSecret);
+		$ret = $service->makeRequest($method, $requestObject, $apiUserName);
 		$this->lastRequest = $ret['request'];
 		$this->lastResponse = $ret['response'];
 		return $this->lastResponse;
