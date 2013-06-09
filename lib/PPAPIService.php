@@ -31,7 +31,7 @@ class PPAPIService {
 		$this->handlers[] = $handler;
 	}
 
-	public function makeRequest($apiMethod, $params, $apiUsername = null, $accessToken = null, $tokenSecret = null) {
+	public function makeRequest($apiMethod, $params, $apiUsername = null) {
 		
 		$this->apiMethod = $apiMethod;
 		if(is_string($apiUsername) || is_null($apiUsername)) {
@@ -41,11 +41,7 @@ class PPAPIService {
 		} else {
 			$apiCredential = $apiUsername; //TODO: Aargh
 		}
-		if(isset($accessToken) && isset($tokenSecret)) {
-			$apiCredential->setThirdPartyAuthorization(
-					new PPTokenAuthorization($accessToken, $tokenSecret));
-		}
-		else if((isset($this->config['accessToken']) && isset($this->config['tokenSecret']))) {
+	    if((isset($this->config['accessToken']) && isset($this->config['tokenSecret']))) {
 			$apiCredential->setThirdPartyAuthorization(
 					new PPTokenAuthorization($this->config['accessToken'], $this->config['tokenSecret']));
 		}

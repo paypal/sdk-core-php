@@ -5,10 +5,6 @@ class PPMerchantServiceHandler extends PPGenericServiceHandler {
 	private $config;
 	public function handle($httpConfig, $request, $options) {
 		parent::handle($httpConfig, $request, $options);
-		if($httpConfig->getHeader('X-PAYPAL-AUTHORIZATION')) {
-			$httpConfig->addHeader('X-PP-AUTHORIZATION', $httpConfig->getHeader('X-PAYPAL-AUTHORIZATION'));
-			$httpConfig->removeHeader('X-PAYPAL-AUTHORIZATION');
-		}
 		$this->config = $options['config'];
 		$credential = $request->getCredential();
 		if($options['port'] != null && isset($this->config['service.EndPoint.'.$options['port']]))

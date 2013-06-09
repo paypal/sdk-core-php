@@ -31,14 +31,6 @@ class PPLoggingManagerTest extends PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testLog()
-    {
-       $this->object->log('Test Error Message', 'Debug');
-    }
-
-    /**
-     * @test
-     */
     public function testError()
     {
     	 $this->object->error('Test Error Message');

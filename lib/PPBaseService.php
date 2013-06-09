@@ -11,12 +11,7 @@ class PPBaseService {
 	private $serviceBinding;
 	private $handlers;
 	
-   /*
-    * Setters and getters for Third party authentication (Permission Services)
-    */
-	protected $accessToken;
-	protected $tokenSecret;
-	
+
 	protected $lastRequest;
 	protected $lastResponse;
 	
@@ -48,44 +43,6 @@ class PPBaseService {
 		$this->lastResponse = $lastRspns;
 	}
 
-	public function getAccessToken() {
-		return $this->accessToken;
-	}
-	/**
-	 * @deprecated
-	 * For using third party token permissions, 
-	 * create a ICredential object and pass it to the
-	 * call() method instead. 
-	 *
-	 *<pre>
-	 * $service = new *Service();
-	 * $cred = new PPSignatureCredential("username", "password", "signature");
-	 * $cred->setThirdPartyAuthorization(new PPTokenAuthorization("accessToken", "tokenSecret"));
-	 * $service->SomeOperation($reqObject, $cred); 
-	 *</pre>	 
-	 */
- 	public function setAccessToken($accessToken) {
-		$this->accessToken = $accessToken;
-	}
-	public function getTokenSecret() {
-		return $this->tokenSecret;
-	}
-	/**
-	 * @deprecated
-	 * For using third party token permissions, 
-	 * create a ICredential object and pass it to the
-	 * call() method instead. 
-	 *
-	 *<pre>
-	 * $service = new *Service();
-	 * $cred = new PPSignatureCredential("username", "password", "signature");
-	 * $cred->setThirdPartyAuthorization(new PPTokenAuthorization("accessToken", "tokenSecret"));
-	 * $service->SomeOperation($reqObject, $cred); 
-	 *</pre>	 
-	 */
-	public function setTokenSecret($tokenSecret) {
-		$this->tokenSecret = $tokenSecret;
-	}
 
 	public function __construct($serviceName, $serviceBinding, $handlers=array(), $config = null) {
 		$this->serviceName = $serviceName;
@@ -117,8 +74,7 @@ class PPBaseService {
 	public function call($port, $method, $requestObject, $apiUserName = NULL) {		
 		$service = new PPAPIService($port, $this->serviceName, 
 				$this->serviceBinding, $this->handlers,$this->config);		
-		$ret = $service->makeRequest($method, $requestObject, $apiUserName, 
-				$this->accessToken, $this->tokenSecret);
+		$ret = $service->makeRequest($method, $requestObject, $apiUserName);
 		$this->lastRequest = $ret['request'];
 		$this->lastResponse = $ret['response'];
 		return $this->lastResponse;
