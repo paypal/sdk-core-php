@@ -1,5 +1,7 @@
 <?php
 namespace PayPal\Core;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 /**
  * Simple Logging Manager.
  * This does an error_log for now
@@ -26,9 +28,6 @@ class PPLoggingManager {
 	// Default Logging Level
 	const DEFAULT_LOGGING_LEVEL = 0;
 
-	// Logger name
-	private $loggerName;
-
 	// Log enabled
 	private $isLoggingEnabled;
 
@@ -37,9 +36,13 @@ class PPLoggingManager {
 
 	// Configured logging file
 	private $loggerFile;
+	
+	//monolog instance
+	private $monolog;
 
 	public function __construct($loggerName, $config = null) {
-		$this->loggerName = $loggerName;
+		$this->monolog = new Logger($loggerName);
+
 		if($config == null) {
 			$config = PPConfigManager::getInstance()->getConfigHashmap();
 		}		
@@ -52,26 +55,25 @@ class PPLoggingManager {
 		}
 	}
 
-	private function log($message, $level=PPLoggingLevel::INFO) {
-		if($this->isLoggingEnabled && ($level <= $this->loggingLevel)) {
-			error_log( $this->loggerName . ": $message\n", 3, $this->loggerFile);
-		}
-	}
 
 	public function error($message) {
-		$this->log($message, PPLoggingLevel::ERROR);
+		$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::ERROR));
+		$this->monolog->addError($message);
 	}
 
 	public function warning($message) {
-		$this->log($message, PPLoggingLevel::WARN);
+		$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::WARNING));
+		$this->monolog->addWarning($message);
 	}
 
 	public function info($message) {
-		$this->log($message, PPLoggingLevel::INFO);
+		$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::INFO));
+		$this->monolog->addInfo($message);
 	}
 
 	public function fine($message) {
-		$this->log($message, PPLoggingLevel::FINE);
+		$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::DEBUG));
+		$this->monolog->addDebug($message);
 	}
 
 }
