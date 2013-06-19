@@ -36,44 +36,79 @@ class PPLoggingManager {
 
 	// Configured logging file
 	private $loggerFile;
-	
+
 	//monolog instance
 	private $monolog;
 
-	public function __construct($loggerName, $config = null) {
-		$this->monolog = new Logger($loggerName);
+	private static $monologObj;
 
-		if($config == null) {
-			$config = PPConfigManager::getInstance()->getConfigHashmap();
-		}		
-		$this->isLoggingEnabled = (array_key_exists('log.LogEnabled', $config) && $config['log.LogEnabled'] == '1');		
-		 
-		if($this->isLoggingEnabled) {
-			$this->loggerFile = ($config['log.FileName']) ? $config['log.FileName'] : ini_get('error_log');
-			$loggingLevel = strtoupper($config['log.LogLevel']);
-			$this->loggingLevel = (isset($loggingLevel) && defined(__NAMESPACE__."\\PPLoggingLevel::$loggingLevel")) ? constant(__NAMESPACE__."\\PPLoggingLevel::$loggingLevel") : PPLoggingManager::DEFAULT_LOGGING_LEVEL;
+	public function __construct($loggerName, $config = null) {
+		if(!isset(self::$monologObj))
+		{
+			$this->monolog = new Logger($loggerName);
+			if($config == null) {
+				$config = PPConfigManager::getInstance()->getConfigHashmap();
+			}
+			$this->isLoggingEnabled = (array_key_exists('log.LogEnabled', $config) && $config['log.LogEnabled'] == '1');
+				
+			if($this->isLoggingEnabled) {
+				$this->loggerFile = ($config['log.FileName']) ? $config['log.FileName'] : ini_get('error_log');
+				$loggingLevel = strtoupper($config['log.LogLevel']);
+				$this->loggingLevel = (isset($loggingLevel) && defined(__NAMESPACE__."\\PPLoggingLevel::$loggingLevel")) ? constant(__NAMESPACE__."\\PPLoggingLevel::$loggingLevel") : PPLoggingManager::DEFAULT_LOGGING_LEVEL;
+			}
 		}
 	}
 
-
+	public static function PPlogger($monologObj)
+	{
+		self::$monologObj = $monologObj;
+	}
 	public function error($message) {
-		$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::ERROR));
-		$this->monolog->addError($message);
+		if(isset(self::$monologObj))
+		{
+			self::$monologObj->addError($message);
+		}
+		else
+		{
+			$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::ERROR));
+			$this->monolog->addError($message);
+		}
 	}
 
 	public function warning($message) {
-		$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::WARNING));
-		$this->monolog->addWarning($message);
+		if(isset(self::$monologObj))
+		{
+			self::$monologObj->addWarning($message);
+		}
+		else
+		{
+			$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::WARNING));
+			$this->monolog->addWarning($message);
+		}
 	}
 
 	public function info($message) {
-		$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::INFO));
-		$this->monolog->addInfo($message);
+		if(isset(self::$monologObj))
+		{
+			self::$monologObj->addInfo($message);
+		}
+		else
+		{
+			$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::INFO));
+			$this->monolog->addInfo($message);
+		}
 	}
 
 	public function fine($message) {
-		$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::DEBUG));
-		$this->monolog->addDebug($message);
+		if(isset(self::$monologObj))
+		{
+			self::$monologObj->addDebug($message);
+		}
+		else
+		{
+			$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::DEBUG));
+			$this->monolog->addDebug($message);
+		}
 	}
 
 }
