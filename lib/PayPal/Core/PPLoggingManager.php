@@ -1,5 +1,7 @@
 <?php
 namespace PayPal\Core;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 /**
  * Simple Logging Manager.
  * This does an error_log for now
@@ -26,9 +28,6 @@ class PPLoggingManager {
 	// Default Logging Level
 	const DEFAULT_LOGGING_LEVEL = 0;
 
-	// Logger name
-	private $loggerName;
-
 	// Log enabled
 	private $isLoggingEnabled;
 
@@ -38,40 +37,78 @@ class PPLoggingManager {
 	// Configured logging file
 	private $loggerFile;
 
+	//monolog instance
+	private $monolog;
+
+	private static $monologObj;
+
 	public function __construct($loggerName, $config = null) {
-		$this->loggerName = $loggerName;
-		if($config == null) {
-			$config = PPConfigManager::getInstance()->getConfigHashmap();
-		}		
-		$this->isLoggingEnabled = (array_key_exists('log.LogEnabled', $config) && $config['log.LogEnabled'] == '1');		
-		 
-		if($this->isLoggingEnabled) {
-			$this->loggerFile = ($config['log.FileName']) ? $config['log.FileName'] : ini_get('error_log');
-			$loggingLevel = strtoupper($config['log.LogLevel']);
-			$this->loggingLevel = (isset($loggingLevel) && defined(__NAMESPACE__."\\PPLoggingLevel::$loggingLevel")) ? constant(__NAMESPACE__."\\PPLoggingLevel::$loggingLevel") : PPLoggingManager::DEFAULT_LOGGING_LEVEL;
+		if(!isset(self::$monologObj))
+		{
+			$this->monolog = new Logger($loggerName);
+			if($config == null) {
+				$config = PPConfigManager::getInstance()->getConfigHashmap();
+			}
+			$this->isLoggingEnabled = (array_key_exists('log.LogEnabled', $config) && $config['log.LogEnabled'] == '1');
+				
+			if($this->isLoggingEnabled) {
+				$this->loggerFile = ($config['log.FileName']) ? $config['log.FileName'] : ini_get('error_log');
+				$loggingLevel = strtoupper($config['log.LogLevel']);
+				$this->loggingLevel = (isset($loggingLevel) && defined(__NAMESPACE__."\\PPLoggingLevel::$loggingLevel")) ? constant(__NAMESPACE__."\\PPLoggingLevel::$loggingLevel") : PPLoggingManager::DEFAULT_LOGGING_LEVEL;
+			}
 		}
 	}
 
-	private function log($message, $level=PPLoggingLevel::INFO) {
-		if($this->isLoggingEnabled && ($level <= $this->loggingLevel)) {
-			error_log( $this->loggerName . ": $message\n", 3, $this->loggerFile);
-		}
+	public static function PPlogger($monologObj)
+	{
+		self::$monologObj = $monologObj;
 	}
-
 	public function error($message) {
-		$this->log($message, PPLoggingLevel::ERROR);
+		if(isset(self::$monologObj))
+		{
+			self::$monologObj->addError($message);
+		}
+		else
+		{
+			$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::ERROR));
+			$this->monolog->addError($message);
+		}
 	}
 
 	public function warning($message) {
-		$this->log($message, PPLoggingLevel::WARN);
+		if(isset(self::$monologObj))
+		{
+			self::$monologObj->addWarning($message);
+		}
+		else
+		{
+			$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::WARNING));
+			$this->monolog->addWarning($message);
+		}
 	}
 
 	public function info($message) {
-		$this->log($message, PPLoggingLevel::INFO);
+		if(isset(self::$monologObj))
+		{
+			self::$monologObj->addInfo($message);
+		}
+		else
+		{
+			$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::INFO));
+			$this->monolog->addInfo($message);
+		}
 	}
 
 	public function fine($message) {
-		$this->log($message, PPLoggingLevel::FINE);
+		if(isset(self::$monologObj))
+		{
+			self::$monologObj->addDebug($message);
+		}
+		else
+		{
+			$this->monolog->pushHandler(new StreamHandler($this->loggerFile, Logger::DEBUG));
+			$this->monolog->addDebug($message);
+		}
 	}
 
 }

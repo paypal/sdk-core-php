@@ -6,6 +6,7 @@
  * curl extension with support for OpenSSL
  * PHPUnit 3.5 for running test suite (Optional)
  * Composer
+ * monolog
 
 #### Configuration
   
