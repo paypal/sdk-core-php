@@ -1,5 +1,5 @@
 <?php
-class PPCredentialAuthHandler implements IPPHandler {
+class PPCertificateAuthHandler implements IPPHandler {
 
 	public function handle($httpConfig, $request, $options) {
 

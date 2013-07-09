@@ -56,8 +56,8 @@ class PPReflectionUtil {
 		
 		if (!($refl =& self::$propertiesRefl[$class][$propertyName])) {
 			$getter = method_exists($class, "get" . ucfirst($propertyName)) ? "get". ucfirst($propertyName)
-				: "get". preg_replace("/([_-\s]?([a-z0-9]+))/e", "ucwords('\\2')", $propertyName);
-			$refl = new ReflectionMethod($class, $getter);
+				: "get". preg_replace_callback("/([_-\s]?([a-z0-9]+))/", "self::replace_callback", $propertyName);
+			$refl = new \ReflectionMethod($class, $getter);
 			self::$propertiesRefl[$class][$propertyName] = $refl;
 		}
 	
@@ -70,5 +70,12 @@ class PPReflectionUtil {
 		}
 	
 		return $annotations;
+	}
+	/*
+	 * preg_replace_callback callback function
+	 */
+	private static function replace_callback($match)
+	{
+		return ucwords($match[2]);
 	}
 }
