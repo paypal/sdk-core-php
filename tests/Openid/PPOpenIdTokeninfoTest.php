@@ -17,6 +17,7 @@ class PPOpenIdTokeninfoTest extends \PHPUnit_Framework_TestCase {
 		$this->token->setAccessToken("Access token")
 					->setExpiresIn(900)
 					->setRefreshToken("Refresh token")
+					->setIdToken("id token")
 					->setScope("openid address")
 					->setTokenType("Bearer");
 	}
@@ -37,5 +38,26 @@ class PPOpenIdTokeninfoTest extends \PHPUnit_Framework_TestCase {
 		$tokenCopy->fromJson($this->token->toJson());
 		
 		$this->assertEquals($this->token, $tokenCopy);
+	}
+	
+	/**
+	 * @test
+	 */
+	public function testInvalidParamAuthCodeCall() {
+		$this->setExpectedException('PayPal\Exception\PPConnectionException');
+		PPOpenIdTokeninfo::createFromAuthorizationCode(array());
+	
+	}
+	
+	/**
+	 * @test
+	 */
+	public function testInvalidParamRefreshTokenCall() {
+	
+		$this->setExpectedException('PayPal\Exception\PPConnectionException');
+		$token = new PPOpenIdTokeninfo();
+		$token->setRefreshToken('refresh');
+		$token->createFromRefreshToken(array());
+	
 	}
 }

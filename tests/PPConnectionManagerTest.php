@@ -70,7 +70,7 @@ class PPConnectionManagerTest extends \PHPUnit_Framework_TestCase
         $conn = $this->object->getConnection(new PPHttpConfig("http://domain.com"), $this->config);
         $this->assertNotNull($conn);
         $this->assertTrue($conn instanceof PPHttpConnection);
-        $this->assertEquals(get_class($conn), "PayPal\Core\PPHttpConnection");
+        $this->assertEquals("PayPal\Core\PPHttpConnection", get_class($conn));
     }
 }
 ?>

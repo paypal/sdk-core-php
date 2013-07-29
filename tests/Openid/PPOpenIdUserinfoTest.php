@@ -36,11 +36,23 @@ class PPOpenIdUserinfoTest extends \PHPUnit_Framework_TestCase {
 			->setPayerId("A-XZASASA")->setPhoneNumber("1-408-111-1111")
 			->setPicture("http://gravatar.com/me.jpg")
 			->setSub("me@email.com")->setUserId("userId")
-			->setVerifiedAccount(true)->setZoneinfo("America/PST");
+			->setVerified(true)->setVerifiedAccount(true)
+			->setZoneinfo("America/PST")->setLanguage('en_US')
+			->setAddress(PPOpenIdAddressTest::getTestData());
 		
 		$userCopy = new PPOpenIdUserinfo();
 		$userCopy->fromJson($user->toJSON());
 		
 		$this->assertEquals($user, $userCopy);
+	}
+	
+	/**
+	 * @test
+	 */
+	public function testInvalidParamUserInfoCall() {
+	
+		$this->setExpectedException('PayPal\Exception\PPConnectionException');
+		PPOpenIdUserinfo::getUserinfo(array('access_token' => 'accessToken'));
+	
 	}
 }
