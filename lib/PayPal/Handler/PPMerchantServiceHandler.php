@@ -4,6 +4,14 @@ use PayPal\Exception\PPConfigurationException;
 use PayPal\Auth\PPSignatureCredential;
 use PayPal\Auth\PPCertificateCredential;
 use PayPal\Core\PPConstants;
+
+/**
+ *
+ * Adds non-authentication headers that are specific to
+ * PayPal's Merchant APIs and determines endpoint to
+ * hit based on configuration parameters.
+ *
+ */
 class PPMerchantServiceHandler extends PPGenericServiceHandler {
 	private $endpoint;
 	private $config;

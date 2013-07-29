@@ -9,7 +9,14 @@ use PayPal\Handler\PPSignatureAuthHandler;
 use PayPal\Handler\PPCertificateAuthHandler;
 use PayPal\Exception\PPInvalidCredentialException;
 
-
+/**
+ *
+ * Determines which authentication handler to run based
+ * on credential passed in.
+ *
+ * Also handles PayPal third party authentication (Permissions API).
+ *
+ */
 class PPAuthenticationHandler implements IPPHandler {	
 	
 	public function handle($httpConfig, $request, $options) {

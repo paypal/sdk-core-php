@@ -27,7 +27,7 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
     		'service.EndPoint.IPN' => 'https://www.sandbox.paypal.com/cgi-bin/webscr'	,
     		'service.EndPoint.Invoice' => 'https://svcs.sandbox.paypal.com/'	,
     		'service.SandboxEmailAddress' => 'platform_sdk_seller@gmail.com',
-    		'log.FileName' => 'PayPal1.log'	,
+    		'log.FileName' => 'PayPal.log'	,
     		'log.LogLevel' => 	'INFO'	,
     		'log.LogEnabled' => 	'1'	,
     );

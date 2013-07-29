@@ -4,7 +4,13 @@ use PayPal\Core\PPConstants;
 use PayPal\Handler\PPGenericServiceHandler;
 use PayPal\Exception\PPConfigurationException;
 
-
+/**
+ *
+ * Adds non-authentication headers that are specific to
+ * PayPal's platform APIs and determines endpoint to
+ * hit based on configuration parameters.
+ *
+ */
 class PPPlatformServiceHandler extends PPGenericServiceHandler {
 	private $endpoint;
 	private $config;
