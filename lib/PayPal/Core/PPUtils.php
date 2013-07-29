@@ -203,8 +203,8 @@ class PPUtils
 	 * @return string
 	 */
 	public static function isAttributeProperty($class, $propertyName) {
-		if (($annotations = self::propertyAnnotations($class, $property))) {
-			return $annotations['attribute'];
+		if (($annotations = self::propertyAnnotations($class, $propertyName))) {
+			return array_key_exists('attribute', $annotations);
 		}
 		return FALSE;
 	}
