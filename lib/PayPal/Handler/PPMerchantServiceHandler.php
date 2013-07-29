@@ -50,7 +50,7 @@ class PPMerchantServiceHandler extends PPGenericServiceHandler {
 			throw new PPConfigurationException('endpoint Not Set');
 		}
 		
-		if($options['serviceBinding'] == 'SOAP' )
+		if($request->getBindingType() == 'SOAP')
 		{
 			$httpConfig->setUrl($this->endpoint);
 		}
