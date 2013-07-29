@@ -2,7 +2,7 @@
 namespace PayPal\Auth\Openid;
 use PayPal\Core\PPConstants;
 use PayPal\Common\PPApiContext;
-use PayPal\Core\PPConstants;
+
 class PPOpenIdSession {
 
 	/**
@@ -53,7 +53,6 @@ class PPOpenIdSession {
 		}
 		$config = $apiContext->getConfig();
 		
-		PPConstants::OPENID_REDIRECT_LIVE_URL;
 		$params = array(
 				'id_token' => $idToken,
 				'redirect_uri' => $redirectUri,
