@@ -15,19 +15,17 @@ class PPApiContext {
 	protected $config;
 	
 	public function setConfig($config) {
-		$this->config = $config;
+		$this->config = PPConfigManager::getInstance()
+						->getConfigWithDefaults($config);
 	}
 	
 	public function getConfig() {
-		if(!isset($this->config)) {
-			$this->config = PPConfigManager::getInstance()->getConfigHashmap();
-		}
 		return $this->config;
 	}
 	
 	public function __construct($config=null) {
-		if(!is_null($config)) {
-			$this->config = $config;
-		}
+		$this->config = PPConfigManager::getInstance()
+				->getConfigWithDefaults($config);
+		
 	}
 }

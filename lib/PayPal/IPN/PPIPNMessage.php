@@ -37,15 +37,10 @@ class PPIPNMessage {
 	 * 				from the input stream
 	*/
 	public function __construct($postData='', $config = null) {
-		if($config == null)
-		{
-			$conf = PPConfigManager::getInstance();
-			$this->config = $conf->config;
-		}
-		else
-		{
-			$this->config = $config;
-		}
+			
+		$this->config = PPConfigManager::getInstance()
+						->getConfigWithDefaults($config);		
+		
 		if($postData == '') {
 			// reading posted data from directly from $_POST may causes serialization issues with array data in POST
 			// reading raw POST data from input stream instead.

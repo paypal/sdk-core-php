@@ -69,5 +69,30 @@ class PPConfigManagerTest extends \PHPUnit_Framework_TestCase
 		$ret = $this->object->getIniPrefix('jb-us-seller_api1.paypal.com');
 		$this->assertEquals('acct1', $ret);
 	}
+
+	/**
+	 * @test
+	 */
+	public function testMergeWithDefaults()
+	{
+		// Test file based config params and defaults
+		$config = PPConfigManager::getInstance()->getConfigWithDefaults(array());
+		$this->assertArrayHasKey('mode', $config, 'file config not read when no custom config is passed');
+		$this->assertEquals('sandbox', $config['mode']);
+		$this->assertEquals(60, $config['http.ConnectionTimeOut']);
+	
+		// Test custom config params and defaults
+		$config = PPConfigManager::getInstance()->getConfigWithDefaults(array('mode' => 'custom'));
+		$this->assertArrayHasKey('mode', $config);
+		$this->assertEquals('custom', $config['mode']);
+		$this->assertEquals(30, $config['http.ConnectionTimeOut']);
+	
+		// Test override for default connection params
+		$config = PPConfigManager::getInstance()->getConfigWithDefaults(
+				array('mode' => 'custom', 'http.ConnectionTimeOut' => 100));
+		$this->assertArrayHasKey('mode', $config);
+		$this->assertEquals('custom', $config['mode']);
+		$this->assertEquals(100, $config['http.ConnectionTimeOut']);
+	}	
 }
 ?>

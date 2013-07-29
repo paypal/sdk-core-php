@@ -11,17 +11,9 @@ class PPBaseService {
 	private $serviceName;
 	private $serviceBinding;
 	private $handlers;
-	
-   /*
-    * Setters and getters for Third party authentication (Permission Services)
-    */
-	protected $accessToken;
-	protected $tokenSecret;
-	
+		
 	protected $lastRequest;
 	protected $lastResponse;
-	
-	
 	
 	// config hash map
 	public $config;
@@ -53,15 +45,8 @@ class PPBaseService {
 		$this->serviceName = $serviceName;
 		$this->serviceBinding = $serviceBinding;
 		$this->handlers = $handlers;
-		if($config == null)
-		{
-			$configFile = PPConfigManager::getInstance();
-			$this->config = $configFile->getConfigHashmap();
-		}
-		else 
-		{
-			$this->config = PPConfigManager::mergrDefaults($config);
-		}
+		
+		$this->config = PPConfigManager::getConfigWithDefaults($config);
 	}
 
 	public function getServiceName() {
@@ -78,7 +63,7 @@ class PPBaseService {
 	 */
 	public function call($port, $method, $requestObject, $apiUserName = NULL) {		
 		$service = new PPAPIService($port, $this->serviceName, 
-				$this->serviceBinding, $this->handlers,$this->config);		
+				$this->serviceBinding, $this->handlers, $this->config);		
 		$ret = $service->makeRequest($method, $requestObject, $apiUserName);
 		$this->lastRequest = $ret['request'];
 		$this->lastResponse = $ret['response'];
