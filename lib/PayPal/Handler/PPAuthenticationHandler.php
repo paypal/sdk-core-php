@@ -18,7 +18,8 @@ class PPAuthenticationHandler implements IPPHandler {
 			$thirdPartyAuth = $credential->getThirdPartyAuthorization();
 			if($thirdPartyAuth && $thirdPartyAuth instanceof PPTokenAuthorization) {
 				$authSignature = AuthSignature::generateFullAuthString($credential->getUsername(), $credential->getPassword(), $thirdPartyAuth->getAccessToken(), $thirdPartyAuth->getTokenSecret(), $httpConfig->getMethod(), $httpConfig->getUrl());
-				if($options['port'] == 'PayPalAPI' || $options['port'] == 'PayPalAPIAA') {
+				if(isset($options['port']) &&
+						($options['port'] == 'PayPalAPI' || $options['port'] == 'PayPalAPIAA')) {
 					$httpConfig->addHeader('X-PP-AUTHORIZATION', $authSignature);
 				}
 				else {

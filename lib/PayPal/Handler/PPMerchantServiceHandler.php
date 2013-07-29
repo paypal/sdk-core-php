@@ -11,7 +11,7 @@ class PPMerchantServiceHandler extends PPGenericServiceHandler {
 		parent::handle($httpConfig, $request, $options);
 		$this->config = $options['config'];
 		$credential = $request->getCredential();
-		if($options['port'] != null && isset($this->config['service.EndPoint.'.$options['port']]))
+		if(isset($options['port']) && isset($this->config['service.EndPoint.'.$options['port']]))
 		{
 			$this->endpoint = $this->config['service.EndPoint.'.$options['port']];
 		}
