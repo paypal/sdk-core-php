@@ -15,8 +15,7 @@ class PPApiContext {
 	protected $config;
 	
 	public function setConfig($config) {
-		$this->config = PPConfigManager::getInstance()
-						->getConfigWithDefaults($config);
+		$this->config = PPConfigManager::getConfigWithDefaults($config);
 	}
 	
 	public function getConfig() {
@@ -24,8 +23,7 @@ class PPApiContext {
 	}
 	
 	public function __construct($config=null) {
-		$this->config = PPConfigManager::getInstance()
-				->getConfigWithDefaults($config);
+		$this->config = PPConfigManager::getConfigWithDefaults($config);
 		
 	}
 }

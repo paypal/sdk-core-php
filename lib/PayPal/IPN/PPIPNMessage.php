@@ -14,7 +14,7 @@ class PPIPNMessage {
 	const IPN_CMD = 'cmd=_notify-validate';
 
 	/*
-	 *@var boolian
+	 *@var boolean
 	*
 	*/
 	private $isIpnVerified;
@@ -38,8 +38,7 @@ class PPIPNMessage {
 	*/
 	public function __construct($postData='', $config = null) {
 			
-		$this->config = PPConfigManager::getInstance()
-						->getConfigWithDefaults($config);		
+		$this->config = PPConfigManager::getConfigWithDefaults($config);		
 		
 		if($postData == '') {
 			// reading posted data from directly from $_POST may causes serialization issues with array data in POST
