@@ -80,42 +80,78 @@ class PPUtils
 
 	public static function xmlToArray($xmlInput)
 	{
-		$xml = simplexml_load_string($xmlInput);
-
-		$ns = $xml->getNamespaces(true);
-		$soap = $xml->children($ns['SOAP-ENV']);
-		$getChild = $soap->Body->children();
+	
+	 	$doc = new \DOMDocument();
+		$doc->loadXML( $xmlInput );		
+		$results = $doc->getElementsByTagName( "Body" );
+		$node = $results->item(0)->childNodes->item(0);
 		$array = array();
-		$ret = PPUtils::convertXmlObjToArr($getChild, $array);
-		return $ret;
+		$ret = PPUtils::xmlToArr($node, $array);
+		return $arretr1;
 	}
 
+public static function xmlToArr($node = null, $index=0)
+{
+    $result = array();
+    $attrs = null;
+    $children = null;
+ 
 
+ 
+    $children = $node->childNodes;
+ 
+    if(!empty($children))
+    {
+        if((int)$children->length === 1)
+        {
+            $child = $children->item(0);
+ 
+            if($child !== null && $child->nodeType === XML_TEXT_NODE)
+            {
+                $result['#value'] = $child->nodeValue;
+                if(count($result) == 1)
+                {
+                    return $result['#value'];
+                }else{
+                    return $result;
+                }
+            }
+        }
+ 
+        for($i = 0; $i < (int)$children->length; $i++)
+        {
+            $child = $children->item($i);
+ 
+            if($child !== null)
+            {
+            	if($child->childNodes->item(0) instanceof \DOMText )
+            			{
+            				echo "***". $child->nodeName . "\n";
+            				$result[$i]['name'] = $child->nodeName;
+            				$result[$i]['text'] = $child->childNodes->item(0)->nodeValue;
+            			}
+                else if(!in_array($child->nodeName, $result))
+                {
+                    $result[$i]['name'] = $child->nodeName;
+                    $result[$i]['children'] = PPUtils::xmlToArr($child, $i);
+                    
+                    if($child->hasAttributes())
+                    {
+                    //	echo "\n";
+                    	$attrs = $child->attributes;
+                    	foreach($attrs as $k => $v)
+                    	{
+                    		$result[$i]['attributes'][$v->name] = $v->value;
+                    	//	echo "node name: " . $node->nodeName ." k: ".$k. " NS: " . $v->namespaceURI . "v:" . $v->value . "\n" ;
+                    	}
+                    }
+                }
+            }
+        }
+    }
+    return $result;
+}
 
-	private static function convertXmlObjToArr($obj, &$arr)
-	{
-		$children = $obj->children();
-		foreach ($children as $elementName => $node) {
-			$nextIdx = count($arr);
-			$arr[$nextIdx] = array();
-			$arr[$nextIdx]['name'] = strtolower((string)$elementName);
-			$arr[$nextIdx]['attributes'] = array();
-			$attributes = $node->attributes();
-			foreach ($attributes as $attributeName => $attributeValue) {
-				$attribName = strtolower(trim((string)$attributeName));
-				$attribVal = trim((string)$attributeValue);
-				$arr[$nextIdx]['attributes'][$attribName] = $attribVal;
-			}
-			$text = (string)$node;
-			$text = trim($text);
-			if (strlen($text) > 0) {
-				$arr[$nextIdx]['text'] = $text;
-			}
-			$arr[$nextIdx]['children'] = array();
-			PPutils::convertXmlObjToArr($node, $arr[$nextIdx]['children']);
-		}
-		return $arr;
-	}
 
 
 
