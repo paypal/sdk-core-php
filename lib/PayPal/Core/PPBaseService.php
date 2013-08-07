@@ -14,9 +14,9 @@ class PPBaseService {
 		
 	protected $lastRequest;
 	protected $lastResponse;
-	
-	// config hash map
-	public $config;
+
+	// API context containing security header and config array
+	public $apiContext;
 
 	/**
 	 * Compute the value that needs to sent for the PAYPAL_REQUEST_SOURCE
@@ -41,12 +41,12 @@ class PPBaseService {
 		$this->lastResponse = $lastRspns;
 	}
 
-	public function __construct($serviceName, $serviceBinding, $handlers=array(), $config = null) {
+	public function __construct($serviceName, $serviceBinding, $handlers=array(), $apiContext = null) {
 		$this->serviceName = $serviceName;
 		$this->serviceBinding = $serviceBinding;
 		$this->handlers = $handlers;
-		
-		$this->config = PPConfigManager::getConfigWithDefaults($config);
+		$apiContext->setConfig(PPConfigManager::getConfigWithDefaults($apiContext->getConfig()));
+		$this->apiContext = $apiContext;
 	}
 
 	public function getServiceName() {
@@ -61,9 +61,20 @@ class PPBaseService {
 	 * 		a username configured in sdk_config.ini or a ICredential object
 	 *      created dynamically 		
 	 */
-	public function call($port, $method, $requestObject, $apiUserName = NULL) {		
-		$service = new PPAPIService($port, $this->serviceName, 
-				$this->serviceBinding, $this->handlers, $this->config);		
+	public function call($port, $method, $requestObject, $apiUserName = NULL) {
+
+		foreach($this->handlers as $handlerClass) {
+			if($handlerClass == 'PayPal\Handler\GenericSoapHandler')
+			{
+				$handlers[] = new $handlerClass($this->xmlNamespacePrefixProvider());
+			}
+			else
+			{
+				$handlers[] = new $handlerClass();
+			}
+		}
+		$service = new PPAPIService($port, $this->serviceName,
+				$this->serviceBinding, $handlers, $this->apiContext);
 		$ret = $service->makeRequest($method, $requestObject, $apiUserName);
 		$this->lastRequest = $ret['request'];
 		$this->lastResponse = $ret['response'];
