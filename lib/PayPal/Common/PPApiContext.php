@@ -14,6 +14,14 @@ class PPApiContext {
 	 */
 	protected $config;
 	
+	/**
+	 * 
+	 * @var custom securityHeader 
+	 */
+	public $securityHeader;
+	
+	public $httpHeaders;
+	
 	public function setConfig($config) {
 		$this->config = PPConfigManager::getConfigWithDefaults($config);
 	}
