@@ -81,7 +81,14 @@ abstract class PPXmlMessage
 			$property = $annotations['name'];
 		}
 
-		$el = '<' . $namespace . ':' . $property;
+		if($namespace === 'true')
+		{
+			$el = '<' . $namespace . ':' . $property;
+		}
+		else
+		{
+			$el = '<' . $property;
+		}
 		if (!is_object($value)) {
 			$el .= '>' . PPUtils::escapeInvalidXmlCharsRegex($value);
 
@@ -93,8 +100,15 @@ abstract class PPXmlMessage
 				$el .= ' ' . $value;
 			}
 		}
-
-		return $el . '</' . $namespace . ':' . $property . '>';
+		if($namespace === 'true')
+		{
+			return $el . '</' . $namespace . ':' . $property . '>';
+		}
+		else 
+		{
+			return $el . '</' . $property . '>';
+		}
+		
 	}
 
 
