@@ -12,14 +12,17 @@ class PPAPIService {
 	public $endpoint;
 	public $config;	
 	public $serviceName;
+	public $apiContext;
 	private $logger;
 	private $handlers = array();
 	private $serviceBinding;
 	private $port;
 	private $apiMethod;
-	public function __construct($port, $serviceName, $serviceBinding, $handlers=array(), $config) {
-		
-		$this->config = $config;
+	private $securityHeader;
+	public function __construct($port, $serviceName, $serviceBinding, $handlers=array(), $apiContext) {
+		$this->apiContext = $apiContext;
+		$this->config = $apiContext->getConfig();
+		$this->securityHeader = $apiContext->securityHeader;
 		$this->serviceName = $serviceName;
 		$this->port = $port;
 
@@ -56,6 +59,10 @@ class PPAPIService {
 		$request = new PPRequest($params, $this->serviceBinding);
 		$request->setCredential($apiCredential);
 		$httpConfig = new PPHttpConfig(null, PPHttpConfig::HTTP_POST);
+		if(isset($this->apiContext->httpHeaders))
+		{
+			$httpConfig->setHeaders($this->apiContext->httpHeaders);
+		}
 		$this->runHandlers($httpConfig, $request);
 
 		$formatter = FormatterFactory::factory($this->serviceBinding);
@@ -73,11 +80,8 @@ class PPAPIService {
 		$options = $this->getOptions();
 		
 		foreach($this->handlers as $handlerClass) {
-			$handler = new $handlerClass();
-			$handler->handle($httpConfig, $request, $options);
+			$handlerClass->handle($httpConfig, $request, $options);
 		}
-		$handler = new PPAuthenticationHandler();
-		$handler->handle($httpConfig, $request, $options);
 	}
 	
 	private function getOptions()
@@ -87,7 +91,8 @@ class PPAPIService {
 			'serviceName' => $this->serviceName,
 			'serviceBinding' => $this->serviceBinding,
 			'config' => $this->config,
-			'apiMethod' => $this->apiMethod
+			'apiMethod' => $this->apiMethod,
+			'securityHeader' => $this->securityHeader
 		);
 	}	
 }
