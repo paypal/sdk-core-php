@@ -81,7 +81,7 @@ abstract class PPXmlMessage
 			$property = $annotations['name'];
 		}
 
-		if($namespace === 'true')
+		if($namespace == true)
 		{
 			$el = '<' . $property;
 		}
@@ -100,7 +100,7 @@ abstract class PPXmlMessage
 				$el .= ' ' . $value;
 			}
 		}
-		if($namespace === 'true')
+		if($namespace === true)
 		{
 			return $el . '</' . $property . '>';
 		}
