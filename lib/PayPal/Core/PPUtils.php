@@ -80,80 +80,65 @@ class PPUtils
 
 	public static function xmlToArray($xmlInput)
 	{
-	
-	 	$doc = new \DOMDocument();
-		$doc->loadXML( $xmlInput );		
+		$doc = new \DOMDocument();
+		$doc->loadXML( $xmlInput );
 		$results = $doc->getElementsByTagName( "Body" );
 		$node = $results->item(0)->childNodes->item(0);
 		$array = array();
 		$ret = PPUtils::xmlToArr($node, $array);
-		return $arretr1;
+		return $ret;
+
 	}
 
-public static function xmlToArr($node = null, $index=0)
-{
-    $result = array();
-    $attrs = null;
-    $children = null;
- 
+	public static function xmlToArr($node = null, $index=0)
+	{
+		$result = array();
+		$attrs = null;
+		$children = null;
+		$children = $node->childNodes;
 
- 
-    $children = $node->childNodes;
- 
-    if(!empty($children))
-    {
-        if((int)$children->length === 1)
-        {
-            $child = $children->item(0);
- 
-            if($child !== null && $child->nodeType === XML_TEXT_NODE)
-            {
-                $result['#value'] = $child->nodeValue;
-                if(count($result) == 1)
-                {
-                    return $result['#value'];
-                }else{
-                    return $result;
-                }
-            }
-        }
- 
-        for($i = 0; $i < (int)$children->length; $i++)
-        {
-            $child = $children->item($i);
- 
-            if($child !== null)
-            {
-            	if($child->childNodes->item(0) instanceof \DOMText )
-            			{
-            				echo "***". $child->nodeName . "\n";
-            				$result[$i]['name'] = $child->nodeName;
-            				$result[$i]['text'] = $child->childNodes->item(0)->nodeValue;
-            			}
-                else if(!in_array($child->nodeName, $result))
-                {
-                    $result[$i]['name'] = $child->nodeName;
-                    $result[$i]['children'] = PPUtils::xmlToArr($child, $i);
-                    
-                    if($child->hasAttributes())
-                    {
-                    //	echo "\n";
-                    	$attrs = $child->attributes;
-                    	foreach($attrs as $k => $v)
-                    	{
-                    		$result[$i]['attributes'][$v->name] = $v->value;
-                    	//	echo "node name: " . $node->nodeName ." k: ".$k. " NS: " . $v->namespaceURI . "v:" . $v->value . "\n" ;
-                    	}
-                    }
-                }
-            }
-        }
-    }
-    return $result;
-}
+		if(!empty($children))
+		{	
+			for($i = 0; $i < (int)$children->length; $i++)
+			{
+				$child = $children->item($i);
+				if($child !== null)
+				{
+					if($child->childNodes->item(0) instanceof \DOMText )
+					{
+						$result[$i]['name'] = $child->nodeName;
+						$result[$i]['text'] = $child->childNodes->item(0)->nodeValue;
+						if($child->hasAttributes()) {
+							foreach($child->attributes as $k => $v) {
+								if($v->namespaceURI != 'http://www.w3.org/2001/XMLSchema-instance') {
+									$result[$i]['attributes'][$v->name] = $v->value;
+								}
+							}
+						}
+					}
+					else if(!in_array($child->nodeName, $result))
+					{
+						$result[$i]['name'] = $child->nodeName;
+						$result[$i]['children'] = PPUtils::xmlToArr($child, $i);
 
+						if($child->hasAttributes())
+						{
+							$attrs = $child->attributes;
+							foreach($attrs as $k => $v)
+							{
+								if($v->namespaceURI != 'http://www.w3.org/2001/XMLSchema-instance')
+								{
 
-
+									$result[$i]['attributes'][$v->name] = $v->value;
+								} 
+							}
+						}
+					}
+				}
+			}
+		}
+		return $result;
+	}
 
 	/**
 	 * Escapes invalid xml characters
@@ -196,7 +181,7 @@ public static function xmlToArr($node = null, $index=0)
 
 	/**
 	 * @var array|string[]
-	 */
+	*/
 	private static $propertiesType = array();
 
 
@@ -206,7 +191,7 @@ public static function xmlToArr($node = null, $index=0)
 	 * @param string $propertyName
 	 * @throws RuntimeException
 	 * @return string
-	 */
+	*/
 	public static function propertyAnnotations($class, $propertyName)
 	{
 		$class = is_object($class) ? get_class($class) : $class;
