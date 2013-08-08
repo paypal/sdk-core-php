@@ -83,11 +83,11 @@ abstract class PPXmlMessage
 
 		if($namespace === 'true')
 		{
-			$el = '<' . $namespace . ':' . $property;
+			$el = '<' . $property;
 		}
 		else
 		{
-			$el = '<' . $property;
+			$el = '<' . $namespace . ':' . $property;
 		}
 		if (!is_object($value)) {
 			$el .= '>' . PPUtils::escapeInvalidXmlCharsRegex($value);
@@ -102,11 +102,11 @@ abstract class PPXmlMessage
 		}
 		if($namespace === 'true')
 		{
-			return $el . '</' . $namespace . ':' . $property . '>';
+			return $el . '</' . $property . '>';
 		}
 		else 
 		{
-			return $el . '</' . $property . '>';
+			return $el . '</' . $namespace . ':' . $property . '>';
 		}
 		
 	}
