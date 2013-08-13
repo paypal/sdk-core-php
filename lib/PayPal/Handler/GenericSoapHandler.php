@@ -18,9 +18,9 @@ class GenericSoapHandler implements IPPHandler {
 		$httpConfig->setUrl($options['config']['service.EndPoint']);
 		$httpConfig->addHeader('Content-Type', 'text/xml');
 		$request->addBindingInfo("namespace", $this->namespace);
-		if(isset($options['securityHeader']))
+		if(isset($options['SOAPHeader']))
 		{
-			$request->addBindingInfo('securityHeader' , $options['securityHeader']->toXMLString());
+			$request->addBindingInfo('SOAPHeader' , $options['SOAPHeader']->toXMLString());
 		}
 		
 	}	
