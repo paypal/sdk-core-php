@@ -1,6 +1,7 @@
 <?php
 namespace PayPal\Core;
 use PayPal\Core\PPAPIService;
+use PayPal\Common\PPApiContext;
 class PPBaseService {
 
     // SDK Name
@@ -15,9 +16,6 @@ class PPBaseService {
 	protected $lastRequest;
 	protected $lastResponse;
 
-	// API context containing security header and config array
-	public $apiContext;
-
 	/**
 	 * Compute the value that needs to sent for the PAYPAL_REQUEST_SOURCE
 	 * parameter when making API calls
@@ -27,7 +25,6 @@ class PPBaseService {
 		return str_replace(" ", "-", self::$SDK_NAME) . "-" . self::$SDK_VERSION;
 	}
 	
-
     public function getLastRequest() {
 		return $this->lastRequest;
 	}
@@ -41,12 +38,10 @@ class PPBaseService {
 		$this->lastResponse = $lastRspns;
 	}
 
-	public function __construct($serviceName, $serviceBinding, $handlers=array(), $apiContext = null) {
+	public function __construct($serviceName, $serviceBinding, $handlers=array()) {
 		$this->serviceName = $serviceName;
 		$this->serviceBinding = $serviceBinding;
 		$this->handlers = $handlers;
-		$apiContext->setConfig(PPConfigManager::getConfigWithDefaults($apiContext->getConfig()));
-		$this->apiContext = $apiContext;
 	}
 
 	public function getServiceName() {
@@ -57,12 +52,19 @@ class PPBaseService {
 	 * 
 	 * @param string $method - API method to call
 	 * @param object $requestObject Request object 
-	 * @param mixed $apiCredential - Optional API credential - can either be
-	 * 		a username configured in sdk_config.ini or a ICredential object
-	 *      created dynamically 		
+	 * @param apiContext $apiContext object containing credential and SOAP headers
+	 * @param mixed $apiUserName - Optional API credential - can either be
+	 * 		a username configured in sdk_config.ini or a ICredential object created dynamically 		
 	 */
-	public function call($port, $method, $requestObject, $apiUserName = NULL) {
-
+	public function call($port, $method, $requestObject,  $apiContext = null, $apiUserName = NULL) {
+		if($apiContext == null)
+		{
+			$apiContext = new PPApiContext(PPConfigManager::getConfigWithDefaults());
+		}
+ 		else if($apiContext->getConfig() == null )
+		{
+			$apiContext->setConfig(PPConfigManager::getConfigWithDefaults());
+		} 
 		foreach($this->handlers as $handlerClass) {
 			if($handlerClass == 'PayPal\Handler\GenericSoapHandler')
 			{
@@ -74,7 +76,7 @@ class PPBaseService {
 			}
 		}
 		$service = new PPAPIService($port, $this->serviceName,
-				$this->serviceBinding, $handlers, $this->apiContext);
+				$this->serviceBinding, $apiContext, $handlers);
 		$ret = $service->makeRequest($method, $requestObject, $apiUserName);
 		$this->lastRequest = $ret['request'];
 		$this->lastResponse = $ret['response'];
