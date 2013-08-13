@@ -18,11 +18,11 @@ class PPAPIService {
 	private $serviceBinding;
 	private $port;
 	private $apiMethod;
-	private $securityHeader;
-	public function __construct($port, $serviceName, $serviceBinding, $handlers=array(), $apiContext) {
+	private $SOAPHeader;
+	public function __construct($port, $serviceName, $serviceBinding, $apiContext, $handlers=array()) {
 		$this->apiContext = $apiContext;
 		$this->config = $apiContext->getConfig();
-		$this->securityHeader = $apiContext->securityHeader;
+		$this->SOAPHeader = $apiContext->getSOAPHeader();
 		$this->serviceName = $serviceName;
 		$this->port = $port;
 
@@ -59,9 +59,9 @@ class PPAPIService {
 		$request = new PPRequest($params, $this->serviceBinding);
 		$request->setCredential($apiCredential);
 		$httpConfig = new PPHttpConfig(null, PPHttpConfig::HTTP_POST);
-		if(isset($this->apiContext->httpHeaders))
+		if($this->apiContext->getHttpHeaders() != null)
 		{
-			$httpConfig->setHeaders($this->apiContext->httpHeaders);
+			$httpConfig->setHeaders($this->apiContext->getHttpHeaders());
 		}
 		$this->runHandlers($httpConfig, $request);
 
@@ -92,7 +92,7 @@ class PPAPIService {
 			'serviceBinding' => $this->serviceBinding,
 			'config' => $this->config,
 			'apiMethod' => $this->apiMethod,
-			'securityHeader' => $this->securityHeader
+			'SOAPHeader' => $this->SOAPHeader
 		);
 	}	
 }
