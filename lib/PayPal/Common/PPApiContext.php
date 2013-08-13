@@ -9,21 +9,38 @@ use PayPal\Core\PPConfigManager;
 class PPApiContext {
 	
 	/**
-	 * 
 	 * @var array Dynamic SDK configuration
 	 */
 	protected $config;
 	
 	/**
-	 * 
-	 * @var custom securityHeader 
+	 * @var custom SOAPHeader 
 	 */
-	public $securityHeader;
+	private $SOAPHeader;
 	
-	public $httpHeaders;
+	private $httpHeaders;
+	
+	public function setHttpHeaders($httpHeaders) {
+		$this->httpHeaders = $httpHeaders;
+		return $this;
+	}
+	
+	public function getHttpHeaders() {
+		return $this->httpHeaders;
+	}
+	
+	public function setSOAPHeader($SOAPHeader) {
+		$this->SOAPHeader = $SOAPHeader;
+		return $this;
+	}
+	
+	public function getSOAPHeader() {
+		return $this->SOAPHeader;
+	}
 	
 	public function setConfig($config) {
 		$this->config = PPConfigManager::getConfigWithDefaults($config);
+		return $this;
 	}
 	
 	public function getConfig() {
@@ -32,6 +49,5 @@ class PPApiContext {
 	
 	public function __construct($config=null) {
 		$this->config = PPConfigManager::getConfigWithDefaults($config);
-		
 	}
 }
