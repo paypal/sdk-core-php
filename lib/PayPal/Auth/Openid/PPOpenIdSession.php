@@ -2,7 +2,7 @@
 namespace PayPal\Auth\Openid;
 use PayPal\Core\PPConstants;
 use PayPal\Common\PPApiContext;
-use PayPal\Core\PPConstants;
+
 class PPOpenIdSession {
 
 	/**
