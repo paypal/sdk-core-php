@@ -78,25 +78,34 @@ class PPUtils
 		}
 	}
 
+	/**
+	 * Convert xml string to an intermediate nested array 
+	 * representation that can be iterated
+	 * 
+	 * @param string $xmlInput	XML string to convert
+	 */
 	public static function xmlToArray($xmlInput)
 	{
 		$doc = new \DOMDocument();
 		$doc->loadXML( $xmlInput );
 		$results = $doc->getElementsByTagName( "Body" );
 		$node = $results->item(0)->childNodes->item(0);
-		$array = array();
-		$ret = PPUtils::xmlToArr($node, $array);
+		$ret = PPUtils::xmlNodeToArray($node);
 		return $ret;
 
 	}
 
-	public static function xmlToArr($node = null, $index=0)
+	/**
+	 * Convert a DOM node to an intermediate nested array
+	 * representation that can be iterated
+	 * 
+	 * @param DOMNode $node	DOM node to convert
+	 */
+	private static function xmlNodeToArray($node)
 	{
 		$result = array();
-		$attrs = null;
-		$children = null;
-		$children = $node->childNodes;
 
+		$children = $node->childNodes;
 		if(!empty($children))
 		{	
 			for($i = 0; $i < (int)$children->length; $i++)
@@ -119,7 +128,7 @@ class PPUtils
 					else if(!in_array($child->nodeName, $result))
 					{
 						$result[$i]['name'] = $child->nodeName;
-						$result[$i]['children'] = PPUtils::xmlToArr($child, $i);
+						$result[$i]['children'] = PPUtils::xmlNodeToArray($child);
 
 						if($child->hasAttributes())
 						{
@@ -154,6 +163,8 @@ class PPUtils
 
 
 	/**
+	 * Filter an array based on keys that match given prefix
+	 *
 	 * @param array $map
 	 * @param string $keyPrefix
 	 * @return array
@@ -187,6 +198,8 @@ class PPUtils
 
 
 	/**
+	 * Get property annotations for a certain property in a class
+	 *
 	 * @param string $class
 	 * @param string $propertyName
 	 * @throws RuntimeException
@@ -219,6 +232,9 @@ class PPUtils
 	}
 
 	/**
+	 * Determine if a property in a given class is a 
+	 * attribute type.
+	 *
 	 * @param string $class
 	 * @param string $propertyName
 	 * @return string
@@ -231,6 +247,9 @@ class PPUtils
 	}
 
 	/**
+	 * Determine if a property in a given class is a 
+	 * collection type.
+	 *
 	 * @param string $class
 	 * @param string $propertyName
 	 * @return string
@@ -251,6 +270,8 @@ class PPUtils
 
 
 	/**
+	 * Get data type of a property in a given class
+	 *
 	 * @param string $class
 	 * @param string $propertyName
 	 * @throws RuntimeException
@@ -270,6 +291,7 @@ class PPUtils
 	}
 
 	/**
+	 * 
 	 * @param object $object
 	 * @return array
 	 */
@@ -291,6 +313,8 @@ class PPUtils
 
 
 	/**
+	 * Convert all array keys to lowercase
+	 *
 	 * @param array $array
 	 * @return array
 	 */

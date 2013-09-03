@@ -28,14 +28,8 @@ class PPBaseService {
     public function getLastRequest() {
 		return $this->lastRequest;
 	}
-    public function setLastRequest($lastRqst) {
-		$this->lastRequest = $lastRqst;
-	}
     public function getLastResponse() {
 		return $this->lastResponse;
-	}
-    public function setLastResponse($lastRspns) {
-		$this->lastResponse = $lastRspns;
 	}
 
 	public function __construct($serviceName, $serviceBinding, $handlers=array()) {

@@ -19,6 +19,7 @@ class PPAPIService {
 	private $port;
 	private $apiMethod;
 	private $SOAPHeader;
+	
 	public function __construct($port, $serviceName, $serviceBinding, $apiContext, $handlers=array()) {
 		$this->apiContext = $apiContext;
 		$this->config = $apiContext->getConfig();
@@ -36,10 +37,25 @@ class PPAPIService {
 		$this->serviceName = $serviceName;
 	}
 
+	/**
+	 * Register additional handlers to run before
+	 * executing this call
+	 *
+	 * @param IPPHandler $handler
+	 */
 	public function addHandler($handler) {
 		$this->handlers[] = $handler;
 	}
 
+	/**
+	 * Execute an api call
+	 *
+	 * @param string $apiMethod	Name of the API operation (such as 'Pay')
+	 * @param object $params Request object 
+	 * @param string $apiUsername
+	 *
+	 * @return array containing request and response
+	 */
 	public function makeRequest($apiMethod, $params, $apiUsername = null) {
 		
 		$this->apiMethod = $apiMethod;
@@ -56,17 +72,21 @@ class PPAPIService {
 		}
 
 
+		// Set up request object / headers and run handlers
 		$request = new PPRequest($params, $this->serviceBinding);
 		$request->setCredential($apiCredential);
 		$httpConfig = new PPHttpConfig(null, PPHttpConfig::HTTP_POST);
-		if($this->apiContext->getHttpHeaders() != null)
-		{
+		if($this->apiContext->getHttpHeaders() != null) {
 			$httpConfig->setHeaders($this->apiContext->getHttpHeaders());
 		}
 		$this->runHandlers($httpConfig, $request);
 
+		
+		// Serialize request object to a string according to the binding configuration
 		$formatter = FormatterFactory::factory($this->serviceBinding);
 		$payload = $formatter->toString($request);
+		
+		// Execute HTTP call
 		$connection = PPConnectionManager::getInstance()->getConnection($httpConfig, $this->config);
 		$this->logger->info("Request: $payload");
 		$response = $connection->execute($payload);
