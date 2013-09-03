@@ -21,30 +21,32 @@ abstract class PPXmlMessage
 	 */
 	public function toXMLString()
 	{
-		if (count($properties = get_object_vars($this)) >= 2 && array_key_exists('value', $properties)) {
-			$attributes = array();
-			foreach (array_keys($properties) as $property) {
-				if ($property === 'value') continue;
-				if (($annots = PPUtils::propertyAnnotations($this, $property)) && isset($annots['attribute'])) {
-					if (($propertyValue = $this->{$property}) === NULL || $propertyValue == NULL) {
-						$attributes[] = NULL;
-						continue;
-					}
-
-					$attributes[] = $property . '="' . PPUtils::escapeInvalidXmlCharsRegex($propertyValue) . '"';
+		$attributes = array();
+		$properties = get_object_vars($this);
+		foreach (array_keys($properties) as $property) {
+			if (($annots = PPUtils::propertyAnnotations($this, $property)) && isset($annots['attribute'])) {
+				if (($propertyValue = $this->{$property}) === NULL || $propertyValue == NULL) {
+					$attributes[] = NULL;
+					continue;
 				}
-			}
-
-			if (count($attributes)) {
-				return implode(' ', $attributes) . '>' . PPUtils::escapeInvalidXmlCharsRegex($this->value);
+				$attributes[] = $property . '="' . PPUtils::escapeInvalidXmlCharsRegex($propertyValue) . '"';
 			}
 		}
+		$attrs = implode(' ', $attributes) . (count($attributes) > 0 ? ">" : "");
 
 		$xml = array();
 		foreach ($properties as $property => $defaultValue) {
 			if (($propertyValue = $this->{$property}) === NULL || $propertyValue == NULL) {
 				continue;
 			}
+			if (($annots = PPUtils::propertyAnnotations($this, $property)) && isset($annots['attribute'])) {
+				continue;
+			}
+			if (isset($annots['value'])) {
+				$xml[] = PPUtils::escapeInvalidXmlCharsRegex($propertyValue);
+				break;
+			}
+
 
 			if (is_array($defaultValue) || is_array($propertyValue)) {
 				foreach ($propertyValue as $item) {
@@ -60,7 +62,7 @@ abstract class PPXmlMessage
 			}
 		}
 
-		return implode($xml);
+		return $attrs . implode($xml);
 	}
 
 

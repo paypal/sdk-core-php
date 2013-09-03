@@ -98,6 +98,41 @@ class AttributeXMLTestClass extends PPXmlMessage {
 	
 }
 
+class AttributeComplexXMLTestClass extends PPXmlMessage {
+	
+	/**
+	 *
+	 * @access public
+	 * @attribute
+	 * @var string
+	 */
+	public $attrib1;
+
+	/**
+	 *
+	 * @access public
+	 * @attribute
+	 * @var string
+	 */
+	public $attrib2;
+	
+	/**
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $value1;
+	
+	/**
+	 *
+	 * @access public
+	 * @var string
+	 */
+	public $value2;
+	
+}
+
+
 /**
  * @hasAttribute
  *
@@ -253,7 +288,22 @@ class PPXmlMessageTest extends PHPUnit_Framework_TestCase
 		$o->attrib2 = "another value";
 		
 		$this->assertEquals('attrib1="a value" attrib2="another value">', $o->toXMLString(''));
+
+		$o = new AttributeXMLTestClass();
+		$o->attrib1 = "a value";
+		$o->attrib2 = "another value";
+		$o->value = "value";
 		
+		$this->assertEquals('attrib1="a value" attrib2="another value">value', $o->toXMLString());
+		
+		$o = new AttributeComplexXMLTestClass();
+		$o->attrib1 = "a value";
+		$o->attrib2 = "another value";
+		$o->value1 = "value1";
+		$o->value2 = "value2";
+		
+		$this->assertEquals('attrib1="a value" attrib2="another value"><ebl:value1>value1</ebl:value1><ebl:value2>value2</ebl:value2>', $o->toXMLString());
+
 	}
 	
 	/**
