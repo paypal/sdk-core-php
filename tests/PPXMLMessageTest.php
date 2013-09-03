@@ -32,6 +32,7 @@ class SimpleContainerXMLTestClass extends PPXmlMessage {
 	
 	/**
 	 * @access public
+	 * @namespace ebl
 	 * @var string
 	 */
 	public $field1;
@@ -39,6 +40,7 @@ class SimpleContainerXMLTestClass extends PPXmlMessage {
 	/**
 	 * @array
 	 * @access public
+	 * @namespace ebl
 	 * @var string
 	 */
 	public $list1;
@@ -46,6 +48,7 @@ class SimpleContainerXMLTestClass extends PPXmlMessage {
 	/**
 	 * @array
 	 * @access public
+	 * @namespace ebl
 	 * @var SimpleXMLTestClass
 	 */
 	public $list2;
@@ -53,12 +56,14 @@ class SimpleContainerXMLTestClass extends PPXmlMessage {
 	/**
 	 * @array
 	 * @access public
+	 * @namespace ebl
 	 * @var AttributeXMLTestClass
 	 */
 	public $list3;
 	
 	/**
 	 * @access public
+	 * @namespace ebl
 	 * @var SimpleXMLTestClass
 	 */
 	public $nestedField;
@@ -85,6 +90,7 @@ class AttributeXMLTestClass extends PPXmlMessage {
 	/**
 	 *
 	 * @access public
+	 * @namespace ebl
 	 * @value
 	 * @var string
 	 */
@@ -100,6 +106,7 @@ class AttributeContainerXMLTestClass extends PPXmlMessage {
 	/**
 	 *
 	 * @access public
+	 * @namespace ebl
 	 * @var AttributeXMLTestClass
 	 */
 	public $member;
@@ -108,6 +115,7 @@ class AttributeContainerXMLTestClass extends PPXmlMessage {
 	 * 
      * @array
 	 * @access public
+	 * @namespace ebl
 	 * @var AttributeXMLTestClass
 	 */ 
 	public $arrayMember;
