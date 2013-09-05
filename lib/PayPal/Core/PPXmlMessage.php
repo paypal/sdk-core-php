@@ -1,5 +1,8 @@
 <?php
 namespace PayPal\Core;
+
+use PayPal\Exception\PPTransformerException;
+
 /**
  * @author 
  */
@@ -113,20 +116,26 @@ abstract class PPXmlMessage
 		
 	}
 
-
-
 	/**
-	 * @param array $map
-	 * @param string $prefix
+	 * @param array $map intermediate array representation of XML message to deserialize
+	 * @param string $isRoot true if this is a root class for SOAP deserialization
 	 */
-	public function init(array $map = array(), $prefix = '')
+	public function init(array $map = array(), $isRoot=true)
 	{
+		if($isRoot) {
+			if(stristr($map[0]['name'], ":fault")) {
+				throw new PPTransformerException("soapfault");
+			} else {
+				$map = $map[0]['children'];
+			}
+		}
+
 		if (empty($map)) {
 			return;
 		}
 
 		if (($first = reset($map)) && !is_array($first) && !is_numeric(key($map))) {
-			parent::init($map, $prefix);
+			parent::init($map, false);
 			return;
 		}
 
@@ -191,11 +200,11 @@ abstract class PPXmlMessage
 
 		if (isset($element['num'])) { // array of objects
 			$this->{$property}[$element['num']] = $item = new $type();
-			$item->init($element['children']);
+			$item->init($element['children'], false);
 
 		} else {
 			$this->{$property} = new $type();
-			$this->{$property}->init($element["children"]);
+			$this->{$property}->init($element["children"], false);
 		}
 	}
 

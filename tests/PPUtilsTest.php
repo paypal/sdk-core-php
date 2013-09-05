@@ -70,7 +70,7 @@ class PPUtilsTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function testxmlToArray() {
+    public function testValidXmlToArray() {
     	 
     	$requestPayload = '<SetExpressCheckoutResponse xmlns="urn:ebay:api:PayPalAPI"><Timestamp xmlns="urn:ebay:apis:eBLBaseComponents">2013-07-23T05:51:03Z</Timestamp><Ack xmlns="urn:ebay:apis:eBLBaseComponents"><Nested>Success</Nested></Ack><CorrelationID xmlns="urn:ebay:apis:eBLBaseComponents">1cf4475882d05</CorrelationID><Version xmlns="urn:ebay:apis:eBLBaseComponents">94.0</Version><Build xmlns="urn:ebay:apis:eBLBaseComponents">6941909</Build><Token xsi:type="ebl:ExpressCheckoutTokenType" attrib="someValue">EC-6KT84265CE1992425</Token></SetExpressCheckoutResponse>';
     	 
@@ -81,12 +81,15 @@ class PPUtilsTest extends \PHPUnit_Framework_TestCase
     	. '</SOAP-ENV:Body></SOAP-ENV:Envelope>';
     	 
     	$ret = PPUtils::xmlToArray($xml);
-    	 
+    	
+		$this->assertEquals("SetExpressCheckoutResponse", $ret[0]['name']);
+
+		$ret = $ret[0]['children'];
     	$this->assertEquals(6, count($ret));
-    	 
-    	// Token node
-    	$this->assertEquals(0, count($ret[5]['children']));
-    	$this->assertEquals("token", $ret[5]['name']);
+    	
+		// Token node
+    	$this->assertFalse(array_key_exists('children', $ret[5]));
+    	$this->assertEquals("Token", $ret[5]['name']);
     	$this->assertEquals("EC-6KT84265CE1992425", $ret[5]['text']);
     	 
     	$this->assertEquals(1, count($ret[5]['attributes']));
@@ -95,13 +98,23 @@ class PPUtilsTest extends \PHPUnit_Framework_TestCase
     	$this->assertEquals("someValue", $ret[5]['attributes'][$k]);
     	 
     	// Ack Node
-    	$this->assertEquals("ack", $ret[1]['name']);
+    	$this->assertEquals("Ack", $ret[1]['name']);
     	$this->assertEquals(1, count($ret[1]['children']));
-    	$this->assertEquals("nested", $ret[1]['children'][0]['name']);
+    	$this->assertEquals("Nested", $ret[1]['children'][0]['name']);
     	$this->assertEquals("Success", $ret[1]['children'][0]['text']);
     	 
     }
-    
+   
+    /**
+	 * @test
+	 */
+	 function testSoapFaultXml() {
+		$xml = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/><soapenv:Body> <soapenv:Fault xmlns:axis2ns237961="http://schemas.xmlsoap.org/soap/envelope/"><faultcode>axis2ns237961:Server</faultcode><faultstring>Authentication failed. API credentials are incorrect.</faultstring><detail><ns3:FaultMessage xmlns:ns3="http://svcs.paypal.com/types/common" xmlns:ns2="http://svcs.paypal.com/types/ap"><responseEnvelope><timestamp>2013-09-03T04:36:14.931-07:00</timestamp><ack>Failure</ack><correlationId>ebeb480862a99</correlationId><build>6941298</build></responseEnvelope><error><errorId>520003</errorId><domain>PLATFORM</domain><subdomain>Application</subdomain><severity>Error</severity><category>Application</category><message>Authentication failed. API credentials are incorrect.</message></error></ns3:FaultMessage></detail></soapenv:Fault></soapenv:Body></soapenv:Envelope>';
+
+		$ret = PPUtils::xmlToArray($xml);
+		$this->assertEquals("soapenv:Fault", $ret[0]['name']);
+	 }
+
     /**
      * @test
      */

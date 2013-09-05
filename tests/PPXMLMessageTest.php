@@ -1,4 +1,5 @@
 <?php
+use PayPal\Core\PPXmlFaultMessage;
 use PayPal\Core\PPXmlMessage;
 use PayPal\Core\PPUtils;
 
@@ -157,6 +158,175 @@ class AttributeContainerXMLTestClass extends PPXmlMessage {
 
 }
 
+class FaultDetailsType extends PPXmlMessage {
+
+    /**
+     * @access public
+     * @namespace ebl
+     * @var string
+     */
+    public $ErrorCode;
+
+    /**
+     * @access public
+     * @namespace ebl
+     * @var string
+     */
+    public $Severity;
+
+    /**
+     *
+     * @access public
+     * @namespace ebl
+     * @var string
+     */
+    public $DetailedMessage;
+
+
+}
+
+class FaultMessage extends PPXmlFaultMessage {
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var ResponseEnvelope
+     */
+    public $responseEnvelope;
+
+    /**
+     *
+     * @array
+     * @access public
+     * @namespace
+     * @var ErrorData
+     */
+    public $error;
+
+}
+
+class ResponseEnvelope extends PPXmlMessage {
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $timestamp;
+
+    /**
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $ack;
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $correlationId;
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $build;
+}
+
+class ErrorData extends PPXmlMessage {
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var Long
+     */
+    public $errorId;
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $domain;
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $subdomain;
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $severity;
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $category;
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $message;
+
+    /**
+     *
+     * @access public
+     * @namespace
+     * @var string
+     */
+    public $exceptionId;
+
+    /**
+     *
+     * @array
+     * @access public
+     * @namespace
+     * @var ErrorParameter
+     */
+    public $parameter;
+}
+
+class ErrorParameter extends PPXmlMessage {
+
+    /**
+     *
+     * @access public
+     * @namespace common
+     * @attribute
+     * @var string
+     */
+    public $name;
+
+    /**
+     *
+     * @access public
+     * @value
+     * @var string
+     */
+    public $value;
+}
 
 /**
  * Test class for PPXmlMessage.
@@ -393,8 +563,19 @@ class PPXmlMessageTest extends PHPUnit_Framework_TestCase
 	}
 	
 	
-	
-	
-	
+	/**
+	 * @test
+	 */
+	public function testSoapFaults() {
+		$xml = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header/><soapenv:Body> <soapenv:Fault xmlns:axis2ns237961="http://schemas.xmlsoap.org/soap/envelope/"><faultcode>axis2ns237961:Server</faultcode><faultstring>Authentication failed. API credentials are incorrect.</faultstring><detail><ns3:FaultMessage xmlns:ns3="http://svcs.paypal.com/types/common" xmlns:ns2="http://svcs.paypal.com/types/ap"><responseEnvelope><timestamp>2013-09-03T04:36:14.931-07:00</timestamp><ack>Failure</ack><correlationId>ebeb480862a99</correlationId><build>6941298</build></responseEnvelope><error><errorId>520003</errorId><domain>PLATFORM</domain><subdomain>Application</subdomain><severity>Error</severity><category>Application</category><message>Authentication failed. API credentials are incorrect.</message></error></ns3:FaultMessage></detail></soapenv:Fault></soapenv:Body></soapenv:Envelope>';
+
+		$map = PPUtils::xmlToArray($xml);
+
+		$o = new FaultMessage();
+		$o->init($map, false);
+		
+		$this->assertEquals("Failure", $o->responseEnvelope->ack);
+		$this->assertEquals("Application", $o->error[0]->category);
+	}
 	
 }

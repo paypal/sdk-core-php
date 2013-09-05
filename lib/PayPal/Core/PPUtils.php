@@ -87,11 +87,17 @@ class PPUtils
 	public static function xmlToArray($xmlInput)
 	{
 		$doc = new \DOMDocument();
-		$doc->loadXML( $xmlInput );
-		$results = $doc->getElementsByTagName( "Body" );
-		$node = $results->item(0)->childNodes->item(0);
-		$ret = PPUtils::xmlNodeToArray($node);
-		return $ret;
+		$doc->preserveWhiteSpace = false;
+		$doc->loadXML($xmlInput);
+
+		$results = $doc->getElementsByTagName("Body");
+		if($results->length > 0 ){
+			//$node = $results->item(0)->childNodes->item(0);
+			$node = $results->item(0);
+			return PPUtils::xmlNodeToArray($node);
+		} else {
+			throw new \Exception("Unrecognized response payload ");
+		}
 
 	}
 
