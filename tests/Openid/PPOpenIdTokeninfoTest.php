@@ -1,5 +1,6 @@
 <?php 
 use PayPal\Auth\Openid\PPOpenIdTokeninfo;
+
 /**
  * Test class for PPOpenIdTokeninfo.
  *
@@ -38,4 +39,31 @@ class PPOpenIdTokeninfoTest extends \PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals($this->token, $tokenCopy);
 	}
+	
+	/**
+	 * @t1est
+	 */
+	public function t1estOperations() {
+
+		$clientId = 'AQkquBDf1zctJOWGKWUEtKXm6qVhueUEMvXO_-MCI4DQQ4-LWvkDLIN2fGsd';
+		$clientSecret = 'ELtVxAjhT7cJimnz5-Nsx9k2reTKSVfErNQF-CmrwJgxRtylkGTKlU4RvrX';
+
+		$params = array(
+			'code' => '<FILLME>',
+			'redirect_uri' => 'https://devtools-paypal.com/',
+			'client_id' => $clientId,
+			'client_secret' => $clientSecret
+		);
+		$accessToken = PPOpenIdTokeninfo::createFromAuthorizationCode($params);
+		$this->assertNotNull($accessToken);
+
+		$params = array(
+			'refresh_token' => $accessToken->getRefreshToken(),
+			'client_id' => $clientId,
+			'client_secret' => $clientSecret
+		);
+		$accessToken = $accessToken->createFromRefreshToken($params);
+		$this->assertNotNull($accessToken);
+	}
+
 }
