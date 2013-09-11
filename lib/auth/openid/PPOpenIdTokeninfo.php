@@ -113,11 +113,13 @@ class PPOpenIdTokeninfo extends PPModel {
 		 *
 		 * @path /v1/identity/openidconnect/tokenservice
 		 * @method POST
-		 * @param array $params (allowed values are grant_type, code and redirect_uri)
-		 * 				(optional) grant_type is the Token grant type. Defaults to authorization_code
-		 * 				code is Authorization code previously received from the authorization server
-		 * 				redirect_uri Redirection endpoint that must match the one provided during the 
+		 * @param array $params (allowed values are client_id, client_secret, grant_type, code and redirect_uri)
+		 *				(required) client_id from developer portal
+		 *				(required) client_secret from developer portal
+		 * 				(required) code is Authorization code previously received from the authorization server
+		 * 				(required) redirect_uri Redirection endpoint that must match the one provided during the 
 		 * 					authorization request that ended in receiving the authorization code.
+		 * 				(optional) grant_type is the Token grant type. Defaults to authorization_code
 		 * @param PPApiContext $apiContext Optional API Context   
 		 * @return PPOpenIdTokeninfo
 		 */
@@ -137,7 +139,10 @@ class PPOpenIdTokeninfo extends PPModel {
 				$call->execute(array('PPOpenIdHandler'),
 					"/v1/identity/openidconnect/tokenservice" , "POST", 
 					http_build_query(array_intersect_key($params, $allowedParams)),
-					array('Content-Type' => 'application/x-www-form-urlencoded')
+					array(
+						'Content-Type' => 'application/x-www-form-urlencoded',
+						'Authorization' => 'Basic ' . base64_encode($params['client_id'] . ":" . $params['client_secret'])
+					)
 			));
 			return $token;
 		}
@@ -147,9 +152,11 @@ class PPOpenIdTokeninfo extends PPModel {
 		 * @path /v1/identity/openidconnect/tokenservice
 		 * @method POST
 		 * @param array $params (allowed values are grant_type and scope)
+		 *				(required) client_id from developer portal
+		 *				(required) client_secret from developer portal
 		 * 				(optional) refresh_token refresh token. If one is not passed, refresh token from the current object is used.
 		 * 				(optional) grant_type is the Token grant type. Defaults to refresh_token
-		 * 				scope is an array that either the same or a subset of the scope passed to the authorization request
+		 * 				(optional) scope is an array that either the same or a subset of the scope passed to the authorization request
 		 * @param APIContext $apiContext Optional API Context   
 		 * @return PPOpenIdTokeninfo
 		 */
@@ -173,7 +180,10 @@ class PPOpenIdTokeninfo extends PPModel {
 				$call->execute(array('PPOpenIdHandler'), 
 					"/v1/identity/openidconnect/tokenservice", "POST",
 					http_build_query(array_intersect_key($params, $allowedParams)),
-					array('Content-Type' => 'application/x-www-form-urlencoded')
+					array(
+						'Content-Type' => 'application/x-www-form-urlencoded',
+						'Authorization' => 'Basic ' . base64_encode($params['client_id'] . ":" . $params['client_secret'])
+					)
 			));
 			return $this;
 		}

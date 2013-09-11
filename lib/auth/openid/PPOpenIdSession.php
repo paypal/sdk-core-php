@@ -1,5 +1,6 @@
 <?php
 
+
 class PPOpenIdSession {
 
 	/**
@@ -10,22 +11,24 @@ class PPOpenIdSession {
 	 * 				the user must be redirected to post paypal login
 	 * @param array $scope The access privilges that you are requesting for
 	 * 				from the user. Pass empty array for all scopes.
-	 * 				See https://developer.paypal.com/webapps/developer/docs/classic/loginwithpaypal/ht_OpenIDConnect/#parameters for more
+	 * @param string $clientId client id from developer portal
+	 * 				See https://developer.paypal.com/webapps/developer/docs/integration/direct/log-in-with-paypal/detailed/#attributes for more
 	 * @param PPApiContext $apiContext Optional API Context
 	 */
-	public static function getAuthorizationUrl($redirectUri, $scope, $apiContext=null) {
+	public static function getAuthorizationUrl($redirectUri, $scope, $clientId, $apiContext=null) {
 
 		if(is_null($apiContext)) {
 			$apiContext = new PPApiContext();
 		}
 		$config = $apiContext->getConfig();
 
-		$scope = count($scope) != 0 ? $scope : array('openid', 'profile', 'address', 'email', 'phone', 'https://uri.paypal.com/services/paypalattributes');
+		$scope = count($scope) != 0 ? $scope : array('openid', 'profile', 'address', 'email', 'phone', 
+					'https://uri.paypal.com/services/paypalattributes', 'https://uri.paypal.com/services/expresscheckout');
 		if(!in_array('openid', $scope)) {
 			$scope[] = 'openid';
 		}
 		$params = array(
-				'client_id' => $config['acct1.ClientId'],
+				'client_id' => $clientId,
 				'response_type' => 'code',
 				'scope' => implode(" ", $scope),
 				'redirect_uri' => $redirectUri
@@ -41,7 +44,7 @@ class PPOpenIdSession {
 	 * @param string $redirectUri Uri on merchant website to where
 	 * 				the user must be redirected to post logout
 	 * @param string $idToken id_token from the TokenInfo object
-	 * @param PayPal/Rest/APIContext $apiContext Optional API Context
+	 * @param PPApiContext $apiContext Optional API Context
 	 */
 	public static function getLogoutUrl($redirectUri, $idToken, $apiContext=null) {
 		
