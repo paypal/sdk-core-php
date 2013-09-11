@@ -1,9 +1,12 @@
 <?php
 namespace PayPal\Handler;
+
 use PayPal\Exception\PPConfigurationException;
+use PayPal\Core\PPCredentialManager;
 use PayPal\Auth\PPSignatureCredential;
 use PayPal\Auth\PPCertificateCredential;
 use PayPal\Core\PPConstants;
+use PayPal\Handler\PPAuthenticationHandler;
 
 /**
  *
@@ -13,43 +16,59 @@ use PayPal\Core\PPConstants;
  *
  */
 class PPMerchantServiceHandler extends PPGenericServiceHandler {
-	private $endpoint;
-	private $config;
+	
+	private $apiUsername;	
+
+	public function __construct($apiUsername, $sdkName, $sdkVersion) {
+		parent::__construct($sdkName, $sdkVersion);
+		$this->apiUsername = $apiUsername;
+	}
+
 	public function handle($httpConfig, $request, $options) {
 		parent::handle($httpConfig, $request, $options);
-		$this->config = $options['config'];
+		$config = $options['config'];
+
+		if(is_string($this->apiUsername) || is_null($this->apiUsername)) {			
+			// $apiUsername is optional, if null the default account in config file is taken
+			$credMgr = PPCredentialManager::getInstance($options['config']);
+			$request->setCredential(clone($credMgr->getCredentialObject($this->apiUsername)));
+		} else {
+			$request->setCredential($this->apiUsername);
+		}
+
+		$endpoint = '';
 		$credential = $request->getCredential();
-		if(isset($options['port']) && isset($this->config['service.EndPoint.'.$options['port']]))
+		if(isset($options['port']) && isset($config['service.EndPoint.'.$options['port']]))
 		{
-			$this->endpoint = $this->config['service.EndPoint.'.$options['port']];
+			$endpoint = $config['service.EndPoint.'.$options['port']];
 		}
 		// for backward compatibilty (for those who are using old config files with 'service.EndPoint')
-		else if (isset($this->config['service.EndPoint']))
+		else if (isset($config['service.EndPoint']))
 		{
-			$this->endpoint = $this->config['service.EndPoint'];
+			$endpoint = $config['service.EndPoint'];
 		}
-		else if (isset($this->config['mode']))
+		else if (isset($config['mode']))
 		{
-			if(strtoupper($this->config['mode']) == 'SANDBOX')
+			if(strtoupper($config['mode']) == 'SANDBOX')
 			{
 				if($credential instanceof PPSignatureCredential)
 				{
-					$this->endpoint = PPConstants::MERCHANT_SANDBOX_SIGNATURE_ENDPOINT;
+					$endpoint = PPConstants::MERCHANT_SANDBOX_SIGNATURE_ENDPOINT;
 				}
 				else if($credential instanceof PPCertificateCredential)
 				{
-					$this->endpoint = PPConstants::MERCHANT_SANDBOX_CERT_ENDPOINT;
+					$endpoint = PPConstants::MERCHANT_SANDBOX_CERT_ENDPOINT;
 				}
 			}
-			else if(strtoupper($this->config['mode']) == 'LIVE')
+			else if(strtoupper($config['mode']) == 'LIVE')
 			{
 			if($credential instanceof PPSignatureCredential)
 				{
-					$this->endpoint = PPConstants::MERCHANT_LIVE_SIGNATURE_ENDPOINT;
+					$endpoint = PPConstants::MERCHANT_LIVE_SIGNATURE_ENDPOINT;
 				}
 				else if($credential instanceof PPCertificateCredential)
 				{
-					$this->endpoint = PPConstants::MERCHANT_LIVE_CERT_ENDPOINT;
+					$endpoint = PPConstants::MERCHANT_LIVE_CERT_ENDPOINT;
 				}
 			}
 		}
@@ -60,7 +79,7 @@ class PPMerchantServiceHandler extends PPGenericServiceHandler {
 		
 		if($request->getBindingType() == 'SOAP')
 		{
-			$httpConfig->setUrl($this->endpoint);
+			$httpConfig->setUrl($endpoint);
 		}
 		else 
 		{
@@ -68,5 +87,8 @@ class PPMerchantServiceHandler extends PPGenericServiceHandler {
 		}
 		
 		$request->addBindingInfo("namespace", "xmlns:ns=\"urn:ebay:api:PayPalAPI\" xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\" xmlns:cc=\"urn:ebay:apis:CoreComponentTypes\" xmlns:ed=\"urn:ebay:apis:EnhancedDataTypes\"");
+		// Call the authentication handler to tack authentication related info
+		$handler = new PPAuthenticationHandler();
+		$handler->handle($httpConfig, $request, $options);
 	}
 }

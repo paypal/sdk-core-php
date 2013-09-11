@@ -2,6 +2,7 @@
 namespace PayPal\Core;
 use PayPal\Core\PPAPIService;
 use PayPal\Common\PPApiContext;
+
 class PPBaseService {
 
     // SDK Name
@@ -12,19 +13,12 @@ class PPBaseService {
 	private $serviceName;
 	private $serviceBinding;
 	private $handlers;
-		
+
+	protected $config;		
 	protected $lastRequest;
 	protected $lastResponse;
 
-	/**
-	 * Compute the value that needs to sent for the PAYPAL_REQUEST_SOURCE
-	 * parameter when making API calls
-	 */
-	public static function getRequestSource()
-	{
-		return str_replace(" ", "-", self::$SDK_NAME) . "-" . self::$SDK_VERSION;
-	}
-	
+		
     public function getLastRequest() {
 		return $this->lastRequest;
 	}
@@ -32,14 +26,14 @@ class PPBaseService {
 		return $this->lastResponse;
 	}
 
-	public function __construct($serviceName, $serviceBinding, $handlers=array()) {
-		$this->serviceName = $serviceName;
-		$this->serviceBinding = $serviceBinding;
-		$this->handlers = $handlers;
-	}
-
 	public function getServiceName() {
 		return $this->serviceName;
+	}
+
+	public function __construct($serviceName, $serviceBinding, $config=null) {
+		$this->serviceName = $serviceName;
+		$this->serviceBinding = $serviceBinding;
+		$this->config = $config;
 	}
 
 	/**
@@ -50,30 +44,24 @@ class PPBaseService {
 	 * @param mixed $apiUserName - Optional API credential - can either be
 	 * 		a username configured in sdk_config.ini or a ICredential object created dynamically 		
 	 */
-	public function call($port, $method, $requestObject,  $apiContext = null, $apiUserName = NULL) {
+	public function call($port, $method, $requestObject, $apiContext, $handlers) {
+
 		if($apiContext == null)
 		{
-			$apiContext = new PPApiContext(PPConfigManager::getConfigWithDefaults());
+			$apiContext = new PPApiContext(PPConfigManager::getConfigWithDefaults($this->config));
 		}
- 		else if($apiContext->getConfig() == null )
-		{
-			$apiContext->setConfig(PPConfigManager::getConfigWithDefaults());
-		} 
-		foreach($this->handlers as $handlerClass) {
-			if($handlerClass == 'PayPal\Handler\GenericSoapHandler')
-			{
-				$handlers[] = new $handlerClass($this->xmlNamespacePrefixProvider());
-			}
-			else
-			{
-				$handlers[] = new $handlerClass();
-			}
+ 		if($apiContext->getConfig() == null )
+		{			
+			$apiContext->setConfig(PPConfigManager::getConfigWithDefaults($this->config));
 		}
+	
 		$service = new PPAPIService($port, $this->serviceName,
 				$this->serviceBinding, $apiContext, $handlers);
-		$ret = $service->makeRequest($method, $requestObject, $apiUserName);
+		$ret = $service->makeRequest($method, new PPRequest($requestObject, $this->serviceBinding));
 		$this->lastRequest = $ret['request'];
 		$this->lastResponse = $ret['response'];
 		return $this->lastResponse;
 	}
+
+
 }
