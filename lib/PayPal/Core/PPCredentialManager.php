@@ -111,9 +111,14 @@ class PPCredentialManager
 				$this->credentialHashmap[$userName] = array('clientId' => $credArr[$key.".ClientId"], 
 						'clientSecret' => $credArr[$key.".ClientSecret"]);
 			}
+
 			if($userName && isset($credArr[$key . ".Subject"]) && trim($credArr[$key . ".Subject"]) != "" ) {
 				$this->credentialHashmap[$userName]->setThirdPartyAuthorization(
 						new PPSubjectAuthorization($credArr[$key . ".Subject"]));
+			}
+			else if($userName && (isset($credArr[$key . 'accessToken']) && isset($credArr[$key . 'tokenSecret']))) {
+				$this->credentialHashmap[$userName]->setThirdPartyAuthorization(
+						new PPTokenAuthorization($credArr[$key.'accessToken'], $credArr[$key.'tokenSecret']));
 			}
 			
 			if ($userName && $this->defaultAccountName == null) {

@@ -1,5 +1,7 @@
 <?php
 use PayPal\Core\PPAPIService;
+use PayPal\Handler\IPPHandler;
+
 /**
  * Test class for PPAPIService.
  *
@@ -25,7 +27,7 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
     		'service.RedirectURL' => 	'https://www.sandbox.paypal.com/webscr&cmd='	,
     		'service.DevCentralURL' => 'https://developer.paypal.com'	,
     		'service.EndPoint.IPN' => 'https://www.sandbox.paypal.com/cgi-bin/webscr'	,
-    		'service.EndPoint.AdaptivePayments' => 'https://svcs.sandbox.paypal.com/'	,
+    		'service.EndPoint.Invoice' => 'https://svcs.sandbox.paypal.com/'	,
     		'service.SandboxEmailAddress' => 'platform_sdk_seller@gmail.com',
     		'log.FileName' => 'PayPal1.log'	,
     		'log.LogLevel' => 	'INFO'	,
@@ -40,7 +42,7 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new PPAPIService(null,'AdaptiveAccounts', 'SOAP', null, $this->config);
+        $this->object = new PPAPIService(null,'Invoice', 'NV', array(), $this->config);
     }
 
     /**
@@ -56,17 +58,49 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetServiceName()
     {  
-    	$this->assertEquals('AdaptiveAccounts',$this->object->serviceName);
-    	$this->object->setServiceName('Invoice');
-        $this->assertEquals('Invoice',$this->object->serviceName);
+    	$this->assertEquals('Invoice',$this->object->serviceName);
+    	$this->object->setServiceName('AdaptiveAccounts');
+        $this->assertEquals('AdaptiveAccounts',$this->object->serviceName);
     }
 
     /**
      * @test
      */
-    public function testMakeRequest()
-    {
-
+    public function testMakeRequestWithoutHandlers() {
+    	$this->object->setServiceName('Invoice');
+    	$this->setExpectedException('PayPal\Exception\PPConnectionException');
+		$this->object->makeRequest('GetInvoiceDetails', new MockNVPClass());
+    }    
+    
+    /**
+     * @test
+     */
+    public function testMakeRequestWithHandlers() {
+    	$this->object->addHandler('MockHandler');
+    	$ret = $this->object->makeRequest('GetInvoiceDetails', new MockNVPClass());
+    	
+    	$this->assertArrayHasKey('response', $ret);
+    	$this->assertContains("responseEnvelope.timestamp=", $ret['response']);
     }
+}
+
+class MockNVPClass {
+	public function toNVPString() {
+		return 'invoiceID=INV2-6657-UHKM-3LWC-JHF7';
+	}
+}
+
+class MockHandler  implements IPPHandler {
+
+	public function handle($httpConfig, $request, $options) {
+		$config = $options['config'];
+		$httpConfig->setUrl('https://svcs.sandbox.paypal.com/Invoice/GetInvoiceDetails');
+		$httpConfig->addHeader('X-PAYPAL-REQUEST-DATA-FORMAT', 'NV');
+		$httpConfig->addHeader('X-PAYPAL-RESPONSE-DATA-FORMAT', 'NV');
+		$httpConfig->addHeader('X-PAYPAL-SECURITY-USERID', 'jb-us-seller_api1.paypal.com');
+		$httpConfig->addHeader('X-PAYPAL-SECURITY-PASSWORD', 'WX4WTU3S8MY44S7F');
+		$httpConfig->addHeader('X-PAYPAL-SECURITY-SIGNATURE', 'AFcWxV21C7fd0v3bYYYRCpSSRl31A7yDhhsPUU2XhtMoZXsWHFxu-RWy');
+	}
+
 }
 ?>

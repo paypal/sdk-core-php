@@ -1,6 +1,9 @@
 <?php
 namespace PayPal\Auth\Openid;
+
+use PayPal\Common\PPApiContext;
 use PayPal\Common\PPModel;
+use PayPal\Transport\PPRestCall;
 /**
  * Token grant resource
  */
@@ -135,7 +138,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			$call = new PPRestCall($apiContext);
 			$token = new PPOpenIdTokeninfo();
 			$token->fromJson(
-				$call->execute(array('PPOpenIdHandler'),
+				$call->execute(array('PayPal\Handler\PPOpenIdHandler'),
 					"/v1/identity/openidconnect/tokenservice" , "POST", 
 					http_build_query(array_intersect_key($params, $allowedParams)),
 					array('Content-Type' => 'application/x-www-form-urlencoded')
@@ -171,7 +174,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			
 			$call = new PPRestCall($apiContext);			
 			$this->fromJson(
-				$call->execute(array('PPOpenIdHandler'), 
+				$call->execute(array('PayPal\Handler\PPOpenIdHandler'), 
 					"/v1/identity/openidconnect/tokenservice", "POST",
 					http_build_query(array_intersect_key($params, $allowedParams)),
 					array('Content-Type' => 'application/x-www-form-urlencoded')

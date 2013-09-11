@@ -18,6 +18,7 @@ class PPConnectionExceptionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->object = new PPConnectionException('http://testURL', 'test message');
+        $this->object->setData('response payload for connection');
     }
 
     /**
@@ -33,16 +34,15 @@ class PPConnectionExceptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUrl()
     {
-    	$this->assertEquals('http://testURL',$this->object->getUrl());
+    	$this->assertEquals('http://testURL', $this->object->getUrl());
     }
+    
     /**
      * @test
      */
- public function testPPConnectionException()
+ 	public function testGetData()
     {
-    	$this->setExpectedException('PayPal\Exception\PPConnectionException');
-    	throw new PPConnectionException('http://testURL','Test msg PPConnectionException');
-    	
+    	$this->assertEquals('response payload for connection', $this->object->getData());    	
     }
 }
 ?>

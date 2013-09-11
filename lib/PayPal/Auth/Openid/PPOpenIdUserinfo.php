@@ -1,6 +1,9 @@
 <?php
 namespace PayPal\Auth\Openid;
+
+use PayPal\Common\PPApiContext;
 use PayPal\Common\PPModel;
+use PayPal\Transport\PPRestCall;
 /**
  * OpenIdConnect UserInfo Resource
  */
@@ -280,7 +283,7 @@ class PPOpenIdUserinfo extends PPModel {
 		 
 		/**
 		 * End-User's preferred address.
-		 * @param PPOpenIdAddress $address
+		 * @param PayPal\Auth\OpenId\PPOpenIdAddress $address
 		 */
 		 public function setAddress($address) {
 		 	$this->address = $address;
@@ -289,7 +292,7 @@ class PPOpenIdUserinfo extends PPModel {
 		
 		/**
 		 * End-User's preferred address.
-		 * @return PPOpenIdAddress
+		 * @return PayPal\Auth\OpenId\PPOpenIdAddress
 		 */
 		 public function getAddress() {
 		 	return $this->address;
@@ -388,7 +391,7 @@ class PPOpenIdUserinfo extends PPModel {
 			$call = new PPRestCall($apiContext);
 			$ret = new PPOpenIdUserinfo();
 			$ret->fromJson(
-				$call->execute(array('PPOpenIdHandler'), $requestUrl, "GET", "", 
+				$call->execute(array('PayPal\Handler\PPOpenIdHandler'), $requestUrl, "GET", "", 
 					array(
 						'Authorization' => "Bearer " . $params['access_token'],
 						'Content-Type'=> 'x-www-form-urlencoded'
