@@ -479,6 +479,21 @@ class PPXmlMessageTest extends PHPUnit_Framework_TestCase
 	/**
 	 * @test
 	 */
+	public function testSimpleDeserialization() {
+		
+		$str = $this->wrapInSoapMessage("<SimpleXMLTestClass><field1>fieldvalue1</field1><field2>0</field2></SimpleXMLTestClass>");
+		
+		$o = new SimpleXMLTestClass();
+		$o->init($str);
+		
+		$this->assertEquals("fieldvalue1", $o->field1);
+		$this->assertSame("0", $o->field2);
+
+	}
+	
+	/**
+	 * @test
+	 */
 	public function testSpecialCharsDeserialization() {
 	
 		$str = $this->wrapInSoapMessage("<SimpleXMLTestClass><field1>fieldvalue1</field1><fieldWith-FunnyName>fieldvalue2</fieldWith-FunnyName></SimpleXMLTestClass>");
