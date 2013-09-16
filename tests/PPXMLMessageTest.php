@@ -527,9 +527,9 @@ class PPXmlMessageTest extends PHPUnit_Framework_TestCase
 		$parent->init($str);
 		
 		$this->assertNotNull($parent->list1);
-// 		$this->assertEquals(true, is_array($parent->list1));
-// 		$this->assertEquals(3, count($parent->list1));
-// 		$this->assertEquals('an array', $parent->list1[2]);
+ 		$this->assertEquals(true, is_array($parent->list1));
+ 		$this->assertEquals(3, count($parent->list1));
+ 		$this->assertEquals('an array', $parent->list1[2]);
 		
 		
 		$str = $this->wrapInSoapMessage('<SimpleContainerXMLTestClass><list1>i</list1><list1>am</list1><list1>an array</list1>'
