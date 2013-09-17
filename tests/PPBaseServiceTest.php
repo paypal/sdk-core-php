@@ -38,7 +38,7 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new PPBaseService('Invoice', 'NV', array('MockHandler'));
+        $this->object = new PPBaseService('Invoice', 'NV', $this->config);
     }
 
     /**
@@ -62,7 +62,7 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testMakeRequestWithHandlers() {
     	$req = new MockNVPClass();
-    	$ret = $this->object->call(null, 'GetInvoiceDetails', $req);
+    	$ret = $this->object->call(null, 'GetInvoiceDetails', $req, null, array(new MockHandler()));
     	$this->assertContains("responseEnvelope.timestamp=", $ret);
     	$this->assertEquals($req->toNVPString(), $this->object->getLastRequest());
     	$this->assertEquals($ret, $this->object->getLastResponse());

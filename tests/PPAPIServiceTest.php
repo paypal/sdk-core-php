@@ -1,5 +1,7 @@
 <?php
 use PayPal\Core\PPAPIService;
+use PayPal\Core\PPRequest;
+use PayPal\Common\PPApiContext;
 use PayPal\Handler\IPPHandler;
 
 /**
@@ -42,7 +44,7 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new PPAPIService(null,'Invoice', 'NV', array(), $this->config);
+        $this->object = new PPAPIService(null,'Invoice', 'NV', new PPApiContext($this->config), array());
     }
 
     /**
@@ -69,15 +71,17 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
     public function testMakeRequestWithoutHandlers() {
     	$this->object->setServiceName('Invoice');
     	$this->setExpectedException('PayPal\Exception\PPConnectionException');
-		$this->object->makeRequest('GetInvoiceDetails', new MockNVPClass());
+		$req = new PPRequest(new MockNVPClass(), "NV");
+		$this->object->makeRequest('GetInvoiceDetails', $req);
     }    
     
     /**
      * @test
      */
     public function testMakeRequestWithHandlers() {
-    	$this->object->addHandler('MockHandler');
-    	$ret = $this->object->makeRequest('GetInvoiceDetails', new MockNVPClass());
+    	$this->object->addHandler( new MockHandler());
+		$req = new PPRequest(new MockNVPClass(), "NV");
+    	$ret = $this->object->makeRequest('GetInvoiceDetails', $req);
     	
     	$this->assertArrayHasKey('response', $ret);
     	$this->assertContains("responseEnvelope.timestamp=", $ret['response']);

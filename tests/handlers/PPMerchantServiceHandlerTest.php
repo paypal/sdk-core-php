@@ -9,8 +9,23 @@ use PayPal\Core\PPRequest;
 
 class PPMerchantServiceHandlerTest extends PHPUnit_Framework_TestCase {
 	
+	private $options;
+	
 	protected function setup() {
-		
+		$this->options = array(
+			'config' => array(
+				'mode' => 'sandbox', 
+				'acct1.UserName' => 'siguser', 
+				'acct1.Password' => 'pass', 
+				'acct1.Signature' => 'signature', 
+				'acct2.UserName' => 'certuser', 
+				'acct2.Password' => 'pass', 
+				'acct2.CertPath' => 'pathtocert', 
+			), 
+			'serviceName' => 'PayPalAPIInterfaceService', 
+			'apiMethod' => 'DoExpressCheckout',
+			'port' => 'apiAA'
+		);
 	}
 	
 	protected function tearDown() {
@@ -22,12 +37,11 @@ class PPMerchantServiceHandlerTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testHeadersAdded() {
 		
-		$options = array('config' => array('mode' => 'sandbox'), 'serviceName' => 'DoExpressCheckout', 'port' => 'apiAA');
 		$req = new PPRequest(new StdClass(), 'SOAP');
 		
 		$httpConfig = new PPHttpConfig();
-		$handler = new PPMerchantServiceHandler();
-		$handler->handle($httpConfig, $req, $options);		
+		$handler = new PPMerchantServiceHandler(null, 'sdkname', 'sdkversion');
+		$handler->handle($httpConfig, $req, $this->options);
 		
 		$this->assertEquals(4, count($httpConfig->getHeaders()), "Basic headers not added");
 		
@@ -37,31 +51,20 @@ class PPMerchantServiceHandlerTest extends PHPUnit_Framework_TestCase {
 	 * @test
 	 */
 	public function testModeBasedEndpointForSignatureCredential() {
-		$apiMethod = 'DoExpressCheckout';
-		$port = 'apiAA';
 		
 		$httpConfig = new PPHttpConfig();
-		$handler = new PPMerchantServiceHandler();
+		$handler = new PPMerchantServiceHandler(null, 'sdkname', 'sdkversion');
 		$req = new PPRequest(new StdClass(), 'SOAP');
 		$req->setCredential(new PPSignatureCredential('a', 'b', 'c'));
 		
-		$handler->handle($httpConfig, $req,
-			array('config' => array('mode' => 'sandbox'), 'apiMethod' => $apiMethod, 'port' => $port)
-		);
+		$handler->handle($httpConfig, $req, $this->options);
 		$this->assertEquals(PPConstants::MERCHANT_SANDBOX_SIGNATURE_ENDPOINT, $httpConfig->getUrl());
 		
-		
-		$handler->handle($httpConfig, $req,
-				array('config' => array('mode' => 'live'), 'apiMethod' => $apiMethod, 'port' => $port)
-		);
+		$options = $this->options;
+		$options['config']['mode'] = 'live';
+		$handler->handle($httpConfig, $req, $options);
 		$this->assertEquals(PPConstants::MERCHANT_LIVE_SIGNATURE_ENDPOINT, $httpConfig->getUrl());
 		
-		
-		$this->setExpectedException('PayPal\Exception\PPConfigurationException');
-		$handler->handle($httpConfig,
-				new PPRequest(new StdClass(), 'NVP'),
-				array('config' => array())
-		);
 	}
 	
 	
@@ -69,42 +72,30 @@ class PPMerchantServiceHandlerTest extends PHPUnit_Framework_TestCase {
 	 * @test
 	 */
 	public function testModeBasedEndpointForCertificateCredential() {
-		$apiMethod = 'DoExpressCheckout';
-		$port = 'apiAA';
 	
 		$httpConfig = new PPHttpConfig();
-		$handler = new PPMerchantServiceHandler();
+		$handler = new PPMerchantServiceHandler('certuser', 'sdkname', 'sdkversion');
 		$req = new PPRequest(new StdClass(), 'SOAP');
-		$req->setCredential(new PPCertificateCredential('a', 'b', 'c'));
 	
-		$handler->handle($httpConfig, $req,
-				array('config' => array('mode' => 'sandbox'), 'apiMethod' => $apiMethod, 'port' => $port)
-		);
+		$handler->handle($httpConfig, $req, $this->options);
 		$this->assertEquals(PPConstants::MERCHANT_SANDBOX_CERT_ENDPOINT, $httpConfig->getUrl());
 	
-	
-		$handler->handle($httpConfig, $req,
-				array('config' => array('mode' => 'live'), 'apiMethod' => $apiMethod, 'port' => $port)
-		);
+		$options = $this->options;
+		$options['config']['mode'] = 'live';
+		$handler->handle($httpConfig, $req, $options);
 		$this->assertEquals(PPConstants::MERCHANT_LIVE_CERT_ENDPOINT, $httpConfig->getUrl());
 	
-	
-		$this->setExpectedException('PayPal\Exception\PPConfigurationException');
-		$handler->handle($httpConfig,
-				new PPRequest(new StdClass(), 'NVP'),
-				array('config' => array())
-		);
 	}
 	
 	
 	public function testCustomEndpoint() {
-		$apiMethod = 'DoExpressCheckout';
-		$port = 'apiAA';
+		
 		$customEndpoint = 'http://myhost/';
-		$options = array('config' => array('service.EndPoint' => $customEndpoint), 'apiMethod' => $apiMethod, 'port' => $port);
+		$options = $this->options;
+		$options['config']['service.EndPoint'] = $customEndpoint;
 		
 		$httpConfig = new PPHttpConfig();
-		$handler = new PPMerchantServiceHandler();
+		$handler = new PPMerchantServiceHandler(null, 'sdkname', 'sdkversion');
 		
 		$handler->handle($httpConfig,
 				new PPRequest(new StdClass(), 'SOAP'), $options			
@@ -112,7 +103,7 @@ class PPMerchantServiceHandlerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("$customEndpoint", $httpConfig->getUrl(), "Custom endpoint not processed");
 	
 		$options['config']['service.EndPoint'] = 'abc';
-		$options['config']["service.EndPoint.$port"] = $customEndpoint;
+		$options['config']["service.EndPoint.". $options['port']] = $customEndpoint;
 		$handler->handle($httpConfig,
 				new PPRequest(new StdClass(), 'SOAP'), $options
 		);
@@ -120,4 +111,43 @@ class PPMerchantServiceHandlerTest extends PHPUnit_Framework_TestCase {
 	
 	}
 	
+	/**
+	 * @test
+	 */
+	 public function testInvalidConfigurations() {
+		$httpConfig = new PPHttpConfig();
+		$handler = new PPMerchantServiceHandler(null, 'sdkname', 'sdkversion');
+		
+		$this->setExpectedException('PayPal\Exception\PPMissingCredentialException');
+		$handler->handle($httpConfig,
+				new PPRequest(new StdClass(), 'SOAP'),
+				array('config' => array())
+		);
+		$this->setExpectedException('PayPal\Exception\PPConfigurationException');
+		
+		
+		$options = $this->options;
+		unset($options['mode']);
+		$handler->handle($httpConfig,
+				new PPRequest(new StdClass(), 'SOAP'),
+				$options
+		);
+	 }
+
+	/**
+	 * @test
+	 */
+	 public function testSourceHeader() {
+		$httpConfig = new PPHttpConfig();
+		$handler = new PPMerchantServiceHandler(null, 'sdkname', 'sdkversion');
+		$handler->handle($httpConfig,
+				new PPRequest(new StdClass(), 'SOAP'),
+				$this->options
+		);
+
+		$headers = $httpConfig->getHeaders();
+		$this->assertArrayHasKey('X-PAYPAL-REQUEST-SOURCE', $headers);
+		$this->assertRegExp('/.*sdkname.*/', $headers['X-PAYPAL-REQUEST-SOURCE']);
+		$this->assertRegExp('/.*sdkversion.*/', $headers['X-PAYPAL-REQUEST-SOURCE']);
+	}
 }
