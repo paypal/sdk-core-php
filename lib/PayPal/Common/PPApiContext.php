@@ -25,6 +25,20 @@ class PPApiContext {
 		return $this->config;
 	}
 	
+    public function get($searchKey)
+    {
+        if(!isset($this->config)) {
+            return PPConfigManager::getInstance()->get($searchKey);
+        }
+        else
+        {
+            if (array_key_exists($searchKey, $this->getConfig()))
+                return $this->config[$searchKey];
+        }
+        
+        return false;
+    }
+	
 	public function __construct($config=null) {
 		if(!is_null($config)) {
 			$this->config = $config;
