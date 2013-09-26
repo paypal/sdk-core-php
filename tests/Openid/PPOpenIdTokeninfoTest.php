@@ -18,6 +18,7 @@ class PPOpenIdTokeninfoTest extends \PHPUnit_Framework_TestCase {
 		$this->token->setAccessToken("Access token")
 					->setExpiresIn(900)
 					->setRefreshToken("Refresh token")
+					->setIdToken("id token")
 					->setScope("openid address")
 					->setTokenType("Bearer");
 	}

@@ -40,9 +40,8 @@ class PPLoggingManager {
 
 	public function __construct($loggerName, $config = null) {
 		$this->loggerName = $loggerName;
-		if($config == null) {
-			$config = PPConfigManager::getInstance()->getConfigHashmap();
-		}		
+		$config = PPConfigManager::getConfigWithDefaults($config);
+
 		$this->isLoggingEnabled = (array_key_exists('log.LogEnabled', $config) && $config['log.LogEnabled'] == '1');		
 		 
 		if($this->isLoggingEnabled) {

@@ -44,14 +44,9 @@ class PPCredentialManager
 	/*
 	 * Load credentials for multiple accounts, with priority given to Signature credential. 
 	 */
-	private function initCredential($config){
-	//	$configMgr = PPConfigManager::getInstance();
+	private function initCredential($config) {
 		$suffix = 1;
 		$prefix = "acct";
-
-	//	$credArr = $configMgr->get($prefix);
-	//	$arrayPartKeys = $configMgr->getIniPrefix();
-		
 		if(array_key_exists($prefix, $config))
 		{
 			$credArr =  $this->config[$searchKey];
@@ -111,9 +106,14 @@ class PPCredentialManager
 				$this->credentialHashmap[$userName] = array('clientId' => $credArr[$key.".ClientId"], 
 						'clientSecret' => $credArr[$key.".ClientSecret"]);
 			}
+
 			if($userName && isset($credArr[$key . ".Subject"]) && trim($credArr[$key . ".Subject"]) != "" ) {
 				$this->credentialHashmap[$userName]->setThirdPartyAuthorization(
 						new PPSubjectAuthorization($credArr[$key . ".Subject"]));
+			}
+			else if($userName && (isset($credArr[$key . 'accessToken']) && isset($credArr[$key . 'tokenSecret']))) {
+				$this->credentialHashmap[$userName]->setThirdPartyAuthorization(
+						new PPTokenAuthorization($credArr[$key.'accessToken'], $credArr[$key.'tokenSecret']));
 			}
 			
 			if ($userName && $this->defaultAccountName == null) {
@@ -145,8 +145,7 @@ class PPCredentialManager
 		}
 		return $credObj;
 	}
-	
-	
+
 	public function __clone()
 	{
 		trigger_error('Clone is not allowed.', E_USER_ERROR);

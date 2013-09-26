@@ -2,7 +2,7 @@
 namespace PayPal\Formatter;
 class PPSOAPFormatter implements IPPFormatter {
 	
-	private static $SOAP_NAMESPACE = ' xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" ';
+	private static $SOAP_NAMESPACE = 'xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"';
 	
 	public function toString($request, $options=array()) {
 				
@@ -23,6 +23,6 @@ class PPSOAPFormatter implements IPPFormatter {
 	}
 	
 	public function toObject($string, $options=array()) {
-		throw new BadMethodCallException("Unimplemented");
+		throw new \BadMethodCallException("Unimplemented");
 	}	
 }

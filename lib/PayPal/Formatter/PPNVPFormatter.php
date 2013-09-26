@@ -7,6 +7,6 @@ class PPNVPFormatter implements IPPFormatter {
 	}
 	
 	public function toObject($string, $options=array()) {
-		throw new BadMethodCallException("Unimplemented");
+		throw new \BadMethodCallException("Unimplemented");
 	}
 }

@@ -29,9 +29,7 @@ class PPConfigurationExceptionTest extends \PHPUnit_Framework_TestCase
     }
     public function testPPConfigurationException()
     {
-    	$this->setExpectedException('PayPal\Exception\PPConfigurationException');
-    	throw new PPConfigurationException('Test PPConfigurationException');
-
+    	$this->assertEquals('Test PPConfigurationException', $this->object->getMessage());
     }
 }
 ?>
