@@ -27,7 +27,7 @@ class PPConnectionManagerTest extends PHPUnit_Framework_TestCase
     		'service.EndPoint.IPN' => 'https://www.sandbox.paypal.com/cgi-bin/webscr'	,
     		'service.EndPoint.AdaptivePayments' => 'https://svcs.sandbox.paypal.com/'	,
     		'service.SandboxEmailAddress' => 'platform_sdk_seller@gmail.com',
-    		'log.FileName' => 'PayPal1.log'	,
+    		'log.FileName' => 'PayPal.log'	,
     		'log.LogLevel' => 	'INFO'	,
     		'log.LogEnabled' => 	'1'	,
     
@@ -68,7 +68,7 @@ class PPConnectionManagerTest extends PHPUnit_Framework_TestCase
         $conn = $this->object->getConnection(new PPHttpConfig("http://domain.com"), $this->config);
         $this->assertNotNull($conn);
         $this->assertTrue($conn instanceof PPHttpConnection);
-        $this->assertEquals(get_class($conn), "PPHttpConnection");
+        $this->assertEquals("PPHttpConnection", get_class($conn));
     }
 }
 ?>

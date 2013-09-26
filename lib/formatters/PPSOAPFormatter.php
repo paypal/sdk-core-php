@@ -2,7 +2,7 @@
 
 class PPSOAPFormatter implements IPPFormatter {
 	
-	private static $SOAP_NAMESPACE = ' xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" ';
+	private static $SOAP_NAMESPACE = 'xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"';
 	
 	public function toString($request, $options=array()) {
 				

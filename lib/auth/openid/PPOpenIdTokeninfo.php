@@ -136,7 +136,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			$call = new PPRestCall($apiContext);
 			$token = new PPOpenIdTokeninfo();
 			$token->fromJson(
-				$call->execute(array('PPOpenIdHandler'),
+				$call->execute(array(new PPOpenIdHandler()),
 					"/v1/identity/openidconnect/tokenservice" , "POST", 
 					http_build_query(array_intersect_key($params, $allowedParams)),
 					array(
@@ -146,7 +146,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			));
 			return $token;
 		}
-        /**
+		/**
 		 * Creates an Access Token from an Refresh Token.
 		 *
 		 * @path /v1/identity/openidconnect/tokenservice
@@ -166,7 +166,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			if(is_null($apiContext)) {
 				$apiContext = new PPApiContext();
 			}
-							
+
 			if(!array_key_exists('grant_type', $params)) {
 				$params['grant_type'] = 'refresh_token';
 			}
@@ -177,7 +177,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			
 			$call = new PPRestCall($apiContext);			
 			$this->fromJson(
-				$call->execute(array('PPOpenIdHandler'), 
+				$call->execute(array(new PPOpenIdHandler()), 
 					"/v1/identity/openidconnect/tokenservice", "POST",
 					http_build_query(array_intersect_key($params, $allowedParams)),
 					array(

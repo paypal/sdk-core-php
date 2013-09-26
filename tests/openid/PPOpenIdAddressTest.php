@@ -5,17 +5,14 @@
  */
 class PPOpenIdAddressTest extends PHPUnit_Framework_TestCase {
 	
-	public $addr;
+	private $addr;
 
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 */
 	protected function setUp() {
-		$this->addr = new PPOpenIdAddress();
-		$this->addr->setCountry("US")->setLocality("San Jose")
-		->setPostalCode("95112")->setRegion("CA")
-		->setStreetAddress("1, North 1'st street");
+		$this->addr = self::getTestData();
 	}
 	
 	/**
@@ -26,6 +23,13 @@ class PPOpenIdAddressTest extends PHPUnit_Framework_TestCase {
 	{
 	}
 	
+	public static function getTestData() {
+		$addr = new PPOpenIdAddress();
+		$addr->setCountry("US")->setLocality("San Jose")
+		->setPostalCode("95112")->setRegion("CA")
+		->setStreetAddress("1, North 1'st street");
+		return $addr;
+	}
 	/**
 	 * @test
 	 */

@@ -1,6 +1,9 @@
 
 # CHANGELOG
 
+## V1.5.0 (September 26, 2013)
+
+   * Updating core to support genio.
 
 ## V1.4.2 (September 11, 2013)
 

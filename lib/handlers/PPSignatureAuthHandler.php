@@ -1,4 +1,9 @@
 <?php
+/**
+ *
+ * Adds authentication headers (Platform/Merchant) that are
+ * specific to PayPal's 3-token credentials
+ */
 class PPSignatureAuthHandler implements IPPHandler {
 		
 	public function handle($httpConfig, $request, $options) {

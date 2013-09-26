@@ -74,7 +74,7 @@ class PPHttpConfig {
 		if(!array_key_exists($name, $this->headers) || $overWrite) {
 			$this->headers[$name] = $value;
 		} else {
-			$this->headers[$name] = $this->headers[$name] . HEADER_SEPARATOR . $value;			
+			$this->headers[$name] = $this->headers[$name] . self::HEADER_SEPARATOR . $value;			
 		}
 	}
 	
@@ -132,7 +132,7 @@ class PPHttpConfig {
 		if(isset($urlParts["port"]))
 			$this->curlOptions[CURLOPT_PROXY] .=  ":" . $urlParts["port"];
 		if(isset($urlParts["user"]))
-			$this->curlOptions[URLOPT_PROXYUSERPWD]	= $urlParts["user"] . ":" . $urlParts["pass"];
+			$this->curlOptions[CURLOPT_PROXYUSERPWD]	= $urlParts["user"] . ":" . $urlParts["pass"];
 	}	
 	
 	/**

@@ -1,4 +1,4 @@
-# PayPal Core SDK - V1.4.0
+# PayPal Core SDK - V1.5.0
 
 ## Prerequisites
 
@@ -25,7 +25,7 @@
 	);
 ```
    4. The access token is valid for a predefined duration and can be used for seamless XO or for retrieving user information
-
+ 
 
 ```php
    $user = PPOpenIdUserinfo::getUserinfo(

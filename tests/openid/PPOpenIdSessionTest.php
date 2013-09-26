@@ -39,7 +39,7 @@ class PPOpenIdSessionTest extends PHPUnit_Framework_TestCase {
 		$clientId = "AQkquBDf1zctJOWGKWUEtKXm6qVhueUEMvXO_-MCI4DQQ4-LWvkDLIN2fGsd";
 		$redirectUri = 'https://devtools-paypal.com/';
 		$scope = array('this', 'that', 'and more');
-		
+
 		$expectedBaseUrl = "https://www.sandbox.paypal.com/webapps/auth/protocol/openidconnect/v1/authorize";
 	
 		$this->assertEquals($expectedBaseUrl . "?client_id=$clientId&response_type=code&scope=this+that+and+more+openid&redirect_uri=" . urlencode($redirectUri),
