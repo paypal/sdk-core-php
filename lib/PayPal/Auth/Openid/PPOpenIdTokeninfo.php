@@ -3,6 +3,7 @@ namespace PayPal\Auth\Openid;
 
 use PayPal\Common\PPApiContext;
 use PayPal\Common\PPModel;
+use PayPal\Handler\PPOpenIdHandler;
 use PayPal\Transport\PPRestCall;
 
 /**
@@ -141,7 +142,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			$call = new PPRestCall($apiContext);
 			$token = new PPOpenIdTokeninfo();
 			$token->fromJson(
-				$call->execute(array('PayPal\Handler\PPOpenIdHandler'),
+				$call->execute(array(new PPOpenIdHandler()),
 					"/v1/identity/openidconnect/tokenservice" , "POST", 
 					http_build_query(array_intersect_key($params, $allowedParams)),
 					array(
@@ -151,7 +152,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			));
 			return $token;
 		}
-        /**
+		/**
 		 * Creates an Access Token from an Refresh Token.
 		 *
 		 * @path /v1/identity/openidconnect/tokenservice
@@ -182,7 +183,7 @@ class PPOpenIdTokeninfo extends PPModel {
 			
 			$call = new PPRestCall($apiContext);			
 			$this->fromJson(
-				$call->execute(array('PayPal\Handler\PPOpenIdHandler'), 
+				$call->execute(array(new PPOpenIdHandler()), 
 					"/v1/identity/openidconnect/tokenservice", "POST",
 					http_build_query(array_intersect_key($params, $allowedParams)),
 					array(

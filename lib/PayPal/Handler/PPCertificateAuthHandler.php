@@ -28,7 +28,7 @@ class PPCertificateAuthHandler implements IPPHandler {
 				break;
 			case 'SOAP':
 				if($thirdPartyAuth && $thirdPartyAuth instanceof PPTokenAuthorization) {
-					$securityHeader = '<ns:RequesterCredentials/>';
+					$request->addBindingInfo('securityHeader', '<ns:RequesterCredentials/>');
 				} else {
 					$securityHeader = '<ns:RequesterCredentials><ebl:Credentials>';
 					$securityHeader .= '<ebl:Username>' . $credential->getUserName() . '</ebl:Username>';

@@ -14,7 +14,7 @@ class PPIPNMessage {
 	const IPN_CMD = 'cmd=_notify-validate';
 
 	/*
-	 *@var boolian
+	 *@var boolean
 	*
 	*/
 	private $isIpnVerified;
@@ -37,15 +37,9 @@ class PPIPNMessage {
 	 * 				from the input stream
 	*/
 	public function __construct($postData='', $config = null) {
-		if($config == null)
-		{
-			$conf = PPConfigManager::getInstance();
-			$this->config = $conf->config;
-		}
-		else
-		{
-			$this->config = $config;
-		}
+			
+		$this->config = PPConfigManager::getConfigWithDefaults($config);		
+		
 		if($postData == '') {
 			// reading posted data from directly from $_POST may causes serialization issues with array data in POST
 			// reading raw POST data from input stream instead.
@@ -164,7 +158,7 @@ class PPIPNMessage {
 		}
 		else
 		{
-			throw new PPConfigurationException('No COnfig file found');
+			throw new PPConfigurationException('You must set one of mode OR service.endpoint.IPN parameters');
 		}
 		return $url;
 	}

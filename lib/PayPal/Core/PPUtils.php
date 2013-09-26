@@ -78,46 +78,81 @@ class PPUtils
 		}
 	}
 
+	/**
+	 * Convert xml string to an intermediate nested array 
+	 * representation that can be iterated
+	 * 
+	 * @param string $xmlInput	XML string to convert
+	 */
 	public static function xmlToArray($xmlInput)
 	{
-		$xml = simplexml_load_string($xmlInput);
+		$doc = new \DOMDocument();
+		$doc->preserveWhiteSpace = false;
+		$doc->loadXML($xmlInput);
 
-		$ns = $xml->getNamespaces(true);
-		$soap = $xml->children($ns['SOAP-ENV']);
-		$getChild = $soap->Body->children();
-		$array = array();
-		$ret = PPUtils::convertXmlObjToArr($getChild, $array);
-		return $ret;
-	}
-
-
-
-	private static function convertXmlObjToArr($obj, &$arr)
-	{
-		$children = $obj->children();
-		foreach ($children as $elementName => $node) {
-			$nextIdx = count($arr);
-			$arr[$nextIdx] = array();
-			$arr[$nextIdx]['name'] = strtolower((string)$elementName);
-			$arr[$nextIdx]['attributes'] = array();
-			$attributes = $node->attributes();
-			foreach ($attributes as $attributeName => $attributeValue) {
-				$attribName = strtolower(trim((string)$attributeName));
-				$attribVal = trim((string)$attributeValue);
-				$arr[$nextIdx]['attributes'][$attribName] = $attribVal;
-			}
-			$text = (string)$node;
-			$text = trim($text);
-			if (strlen($text) > 0) {
-				$arr[$nextIdx]['text'] = $text;
-			}
-			$arr[$nextIdx]['children'] = array();
-			PPutils::convertXmlObjToArr($node, $arr[$nextIdx]['children']);
+		$results = $doc->getElementsByTagName("Body");
+		if($results->length > 0 ){
+			$node = $results->item(0);
+			return PPUtils::xmlNodeToArray($node);
+		} else {
+			throw new \Exception("Unrecognized response payload ");
 		}
-		return $arr;
+
 	}
 
+	/**
+	 * Convert a DOM node to an intermediate nested array
+	 * representation that can be iterated
+	 * 
+	 * @param DOMNode $node	DOM node to convert
+	 */
+	private static function xmlNodeToArray($node)
+	{
+		$result = array();
 
+		$children = $node->childNodes;
+		if(!empty($children))
+		{	
+			for($i = 0; $i < (int)$children->length; $i++)
+			{
+				$child = $children->item($i);
+				if($child !== null)
+				{
+					if($child->childNodes->item(0) instanceof \DOMText )
+					{
+						$result[$i]['name'] = $child->nodeName;
+						$result[$i]['text'] = $child->childNodes->item(0)->nodeValue;
+						if($child->hasAttributes()) {
+							foreach($child->attributes as $k => $v) {
+								if($v->namespaceURI != 'http://www.w3.org/2001/XMLSchema-instance') {
+									$result[$i]['attributes'][$v->name] = $v->value;
+								}
+							}
+						}
+					}
+					else if(!in_array($child->nodeName, $result))
+					{
+						$result[$i]['name'] = $child->nodeName;
+						$result[$i]['children'] = PPUtils::xmlNodeToArray($child);
+
+						if($child->hasAttributes())
+						{
+							$attrs = $child->attributes;
+							foreach($attrs as $k => $v)
+							{
+								if($v->namespaceURI != 'http://www.w3.org/2001/XMLSchema-instance')
+								{
+
+									$result[$i]['attributes'][$v->name] = $v->value;
+								} 
+							}
+						}
+					}
+				}
+			}
+		}
+		return $result;
+	}
 
 	/**
 	 * Escapes invalid xml characters
@@ -133,6 +168,8 @@ class PPUtils
 
 
 	/**
+	 * Filter an array based on keys that match given prefix
+	 *
 	 * @param array $map
 	 * @param string $keyPrefix
 	 * @return array
@@ -166,6 +203,8 @@ class PPUtils
 
 
 	/**
+	 * Get property annotations for a certain property in a class
+	 *
 	 * @param string $class
 	 * @param string $propertyName
 	 * @throws RuntimeException
@@ -198,18 +237,24 @@ class PPUtils
 	}
 
 	/**
+	 * Determine if a property in a given class is a 
+	 * attribute type.
+	 *
 	 * @param string $class
 	 * @param string $propertyName
 	 * @return string
 	 */
 	public static function isAttributeProperty($class, $propertyName) {
-		if (($annotations = self::propertyAnnotations($class, $property))) {
-			return $annotations['attribute'];
+		if (($annotations = self::propertyAnnotations($class, $propertyName))) {
+			return array_key_exists('attribute', $annotations);
 		}
 		return FALSE;
 	}
 
 	/**
+	 * Determine if a property in a given class is a 
+	 * collection type.
+	 *
 	 * @param string $class
 	 * @param string $propertyName
 	 * @return string
@@ -230,6 +275,8 @@ class PPUtils
 
 
 	/**
+	 * Get data type of a property in a given class
+	 *
 	 * @param string $class
 	 * @param string $propertyName
 	 * @throws RuntimeException
@@ -249,6 +296,7 @@ class PPUtils
 	}
 
 	/**
+	 * 
 	 * @param object $object
 	 * @return array
 	 */
@@ -270,6 +318,8 @@ class PPUtils
 
 
 	/**
+	 * Convert all array keys to lowercase
+	 *
 	 * @param array $array
 	 * @return array
 	 */
@@ -281,117 +331,6 @@ class PPUtils
 		}
 
 		return $ret;
-	}
-
-}
-
-
-
-/**
- * XMLToArray Generator Class
- *
- * @author  :  MA Razzaque Rupom <rupom_315@yahoo.com>, <rupom.bd@gmail.com>
- *             Moderator, phpResource (LINK1http://groups.yahoo.com/group/phpresource/LINK1)
- *             URL: LINK2http://www.rupom.infoLINK2
- * @version :  1.0
- * @date       06/05/2006
- * Purpose  : Creating Hierarchical Array from XML Data
- * Released : Under GPL
- */
-class XmlToArray
-{
-
-	var $xml = '';
-
-
-
-	/**
-	 * Default Constructor
-	 *
-	 * @param $xml = xml data
-	 * @return none
-	 */
-	function XmlToArray($xml)
-	{
-		$this->xml = $xml;
-	}
-
-
-
-	/**
-	 * _struct_to_array($values, &$i)
-	 *
-	 * This is adds the contents of the return xml into the array for easier processing.
-	 * Recursive, Static
-	 *
-	 * @access    private
-	 * @param    array  $values this is the xml data in an array
-	 * @param    int    $i  this is the current location in the array
-	 * @return    Array
-	 */
-	function _struct_to_array($values, &$i)
-	{
-		$child = array();
-		if (isset($values[$i]['value'])) {
-			array_push($child, $values[$i]['value']);
-		}
-
-		while ($i++ < count($values)) {
-			switch ($values[$i]['type']) {
-				case 'cdata':
-					array_push($child, $values[$i]['value']);
-					break;
-
-				case 'complete':
-					$name = $values[$i]['tag'];
-					if (!empty($name)) {
-						$child[$name] = ($values[$i]['value']) ? ($values[$i]['value']) : '';
-						if (isset($values[$i]['attributes'])) {
-							$child[$name] = $values[$i]['attributes'];
-						}
-					}
-					break;
-
-				case 'open':
-					$name = $values[$i]['tag'];
-					$size = isset($child[$name]) ? sizeof($child[$name]) : 0;
-					$child[$name][$size] = $this->_struct_to_array($values, $i);
-					break;
-
-				case 'close':
-					return $child;
-					break;
-			}
-		}
-		return $child;
-	}
-
-
-
-	/**
-	 * createArray($data)
-	 *
-	 * This is adds the contents of the return xml into the array for easier processing.
-	 *
-	 * @access    public
-	 * @return    Array
-	 */
-	function createArray()
-	{
-		$xml = $this->xml;
-		$values = array();
-		$index = array();
-		$array = array();
-		$parser = xml_parser_create();
-		xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
-		xml_parse_into_struct($parser, $xml, $values, $index);
-		xml_parser_free($parser);
-		$i = 0;
-		$name = $values[$i]['tag'];
-		$array[$name] = isset($values[$i]['attributes']) ? $values[$i]['attributes'] : '';
-		$array[$name] = $this->_struct_to_array($values, $i);
-		return $array;
 	}
 
 }

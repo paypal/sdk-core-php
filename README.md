@@ -1,4 +1,4 @@
-### PayPal Core SDK - V2.4.0
+### PayPal Core SDK - V2.5.0
 
 #### Prerequisites
 

@@ -1,6 +1,6 @@
 <?php
 namespace PayPal\Auth\Openid;
-namespace PayPal\Common\PPModel;
+use PayPal\Common\PPModel;
 /**
  * Error resource
  */

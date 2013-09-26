@@ -49,7 +49,7 @@ class PPRequest {
 	
 	public function getBindingInfo($name=NULL) {
 		if(isset($name)) {
-			return $this->bindingInfo[$name];
+			return array_key_exists($name, $this->bindingInfo) ? $this->bindingInfo[$name] : null;
 		}
 		return $this->bindingInfo;
 	}

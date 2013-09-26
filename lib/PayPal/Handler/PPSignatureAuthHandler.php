@@ -5,7 +5,11 @@ use PayPal\Auth\PPSubjectAuthorization;
 use PayPal\Auth\Oauth\AuthSignature;
 use PayPal\Core\PPConstants;
 use PayPal\Handler\IPPHandler;
-
+/**
+ *
+ * Adds authentication headers (Platform/Merchant) that are
+ * specific to PayPal's 3-token credentials
+ */
 class PPSignatureAuthHandler implements IPPHandler {
 		
 	public function handle($httpConfig, $request, $options) {

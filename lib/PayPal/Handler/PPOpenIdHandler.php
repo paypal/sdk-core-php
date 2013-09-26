@@ -2,23 +2,17 @@
 namespace PayPal\Handler;
 
 use PayPal\Exception\PPConfigurationException;
-use PayPal\Core\PPConstants;
 use PayPal\Common\PPUserAgent;
+use PayPal\Core\PPConstants;
 
 class PPOpenIdHandler implements IPPHandler {
 	
-	private $apiContext;
-	
 	private static $sdkName = "openid-sdk-php";	
-	private static $sdkVersion = "2.4.3";
+	private static $sdkVersion = "2.5.0";
 	
-	public function __construct($apiContext) {
-		$this->apiContext = $apiContext;
-	}
-
 	public function handle($httpConfig, $request, $options) {
-
-		$config = $this->apiContext->getConfig();
+		$apiContext = $options['apiContext'];
+		$config = $apiContext->getConfig();
 		$httpConfig->setUrl(
 			rtrim(trim($this->_getEndpoint($config)), '/') . 
 				(isset($options['path']) ? $options['path'] : '')
