@@ -1,7 +1,6 @@
 <?php
 class PPCredentialManager
 {
-	
 	private static $instance;
 	//hashmap to contain credentials for accounts.
 	private $credentialHashmap = array();
@@ -37,33 +36,16 @@ class PPCredentialManager
 	/*
 	 * Load credentials for multiple accounts, with priority given to Signature credential. 
 	 */
-	private function initCredential($config){
-	//	$configMgr = PPConfigManager::getInstance();
+	private function initCredential($config) {
 		$suffix = 1;
 		$prefix = "acct";
-
-	//	$credArr = $configMgr->get($prefix);
-	//	$arrayPartKeys = $configMgr->getIniPrefix();
 		
-		if(array_key_exists($prefix, $config))
-		{
-			$credArr =  $this->config[$searchKey];
-		}
-		else {
-			$arr = array();
-			foreach ($config as $k => $v){
-				if(strstr($k, $prefix)){
-					$arr[$k] = $v;
-				}
-			}
-				
-			$credArr =  $arr;
-		}
-		
+		$credArr = array();
 		$arr = array();
 		foreach ($config as $key => $value) {
 			$pos = strpos($key, '.');
-			if(strstr($key, "acct")){
+			if(strstr($key, $prefix)){
+				$credArr[$key] = $value;
 				$arr[] = substr($key, 0, $pos);
 			}
 		}
@@ -104,6 +86,7 @@ class PPCredentialManager
 				$this->credentialHashmap[$userName] = array('clientId' => $credArr[$key.".ClientId"], 
 						'clientSecret' => $credArr[$key.".ClientSecret"]);
 			}
+
 			if($userName && isset($credArr[$key . ".Subject"]) && trim($credArr[$key . ".Subject"]) != "" ) {
 				$this->credentialHashmap[$userName]->setThirdPartyAuthorization(
 						new PPSubjectAuthorization($credArr[$key . ".Subject"]));
@@ -138,8 +121,7 @@ class PPCredentialManager
 		}
 		return $credObj;
 	}
-	
-	
+
 	public function __clone()
 	{
 		trigger_error('Clone is not allowed.', E_USER_ERROR);

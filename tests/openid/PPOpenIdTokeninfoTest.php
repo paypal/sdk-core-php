@@ -16,6 +16,7 @@ class PPOpenIdTokeninfoTest extends PHPUnit_Framework_TestCase {
 		$this->token->setAccessToken("Access token")
 					->setExpiresIn(900)
 					->setRefreshToken("Refresh token")
+					->setIdToken("id token")
 					->setScope("openid address")
 					->setTokenType("Bearer");
 	}
@@ -39,12 +40,12 @@ class PPOpenIdTokeninfoTest extends PHPUnit_Framework_TestCase {
 	}
 	
 	/**
-	 * @tes1t
+	 * @t1est
 	 */
-	public function tes1tOperations() {
+	public function t1estOperations() {
 
 		$clientId = 'AQkquBDf1zctJOWGKWUEtKXm6qVhueUEMvXO_-MCI4DQQ4-LWvkDLIN2fGsd';
-		$clientSecret = 'EL1tVxAjhT7cJimnz5-Nsx9k2reTKSVfErNQF-CmrwJgxRtylkGTKlU4RvrX';
+		$clientSecret = 'ELtVxAjhT7cJimnz5-Nsx9k2reTKSVfErNQF-CmrwJgxRtylkGTKlU4RvrX';
 
 		$params = array(
 			'code' => '<FILLME>',

@@ -1,6 +1,5 @@
 <?php
 
-
 class PPOpenIdSession {
 
 	/**
@@ -53,7 +52,6 @@ class PPOpenIdSession {
 		}
 		$config = $apiContext->getConfig();
 		
-		PPConstants::OPENID_REDIRECT_LIVE_URL;
 		$params = array(
 				'id_token' => $idToken,
 				'redirect_uri' => $redirectUri,

@@ -1,4 +1,9 @@
 <?php
+/**
+ *
+ * Adds authentication headers (Platform/Merchant) that are
+ * specific to PayPal's client certificate credentials
+ */
 class PPCertificateAuthHandler implements IPPHandler {
 
 	public function handle($httpConfig, $request, $options) {
@@ -23,7 +28,7 @@ class PPCertificateAuthHandler implements IPPHandler {
 				break;
 			case 'SOAP':
 				if($thirdPartyAuth && $thirdPartyAuth instanceof PPTokenAuthorization) {
-					$securityHeader = '<ns:RequesterCredentials/>';
+					$request->addBindingInfo('securityHeader', '<ns:RequesterCredentials/>');
 				} else {
 					$securityHeader = '<ns:RequesterCredentials><ebl:Credentials>';
 					$securityHeader .= '<ebl:Username>' . $credential->getUserName() . '</ebl:Username>';

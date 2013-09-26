@@ -21,30 +21,32 @@ abstract class PPXmlMessage
 	 */
 	public function toXMLString()
 	{
-		if (count($properties = get_object_vars($this)) >= 2 && array_key_exists('value', $properties)) {
-			$attributes = array();
-			foreach (array_keys($properties) as $property) {
-				if ($property === 'value') continue;
-				if (($annots = PPUtils::propertyAnnotations($this, $property)) && isset($annots['attribute'])) {
-					if (($propertyValue = $this->{$property}) === NULL || $propertyValue == NULL) {
-						$attributes[] = NULL;
-						continue;
-					}
-
-					$attributes[] = $property . '="' . PPUtils::escapeInvalidXmlCharsRegex($propertyValue) . '"';
+		$attributes = array();
+		$properties = get_object_vars($this);
+		foreach (array_keys($properties) as $property) {
+			if (($annots = PPUtils::propertyAnnotations($this, $property)) && isset($annots['attribute'])) {
+				if (($propertyValue = $this->{$property}) === NULL || $propertyValue == NULL) {
+					$attributes[] = NULL;
+					continue;
 				}
-			}
-
-			if (count($attributes)) {
-				return implode(' ', $attributes) . '>' . PPUtils::escapeInvalidXmlCharsRegex($this->value);
+				$attributes[] = $property . '="' . PPUtils::escapeInvalidXmlCharsRegex($propertyValue) . '"';
 			}
 		}
+		$attrs = implode(' ', $attributes) . (count($attributes) > 0 ? ">" : "");
 
 		$xml = array();
 		foreach ($properties as $property => $defaultValue) {
 			if (($propertyValue = $this->{$property}) === NULL || $propertyValue == NULL) {
 				continue;
 			}
+			if (($annots = PPUtils::propertyAnnotations($this, $property)) && isset($annots['attribute'])) {
+				continue;
+			}
+			if (isset($annots['value'])) {
+				$xml[] = PPUtils::escapeInvalidXmlCharsRegex($propertyValue);
+				break;
+			}
+
 
 			if (is_array($defaultValue) || is_array($propertyValue)) {
 				foreach ($propertyValue as $item) {
@@ -60,7 +62,7 @@ abstract class PPXmlMessage
 			}
 		}
 
-		return implode($xml);
+		return $attrs . implode($xml);
 	}
 
 
@@ -81,7 +83,14 @@ abstract class PPXmlMessage
 			$property = $annotations['name'];
 		}
 
-		$el = '<' . $namespace . ':' . $property;
+		if($namespace === true)
+		{
+			$el = '<' . $property;
+		}
+		else
+		{
+			$el = '<' . $namespace . ':' . $property;
+		}
 		if (!is_object($value)) {
 			$el .= '>' . PPUtils::escapeInvalidXmlCharsRegex($value);
 
@@ -93,24 +102,37 @@ abstract class PPXmlMessage
 				$el .= ' ' . $value;
 			}
 		}
+		if($namespace === true)
+		{
+			return $el . '</' . $property . '>';
+		}
+		else 
+		{
+			return $el . '</' . $namespace . ':' . $property . '>';
+		}
 
-		return $el . '</' . $namespace . ':' . $property . '>';
 	}
 
-
-
 	/**
-	 * @param array $map
-	 * @param string $prefix
+	 * @param array $map intermediate array representation of XML message to deserialize
+	 * @param string $isRoot true if this is a root class for SOAP deserialization
 	 */
-	public function init(array $map = array(), $prefix = '')
+	public function init(array $map = array(), $isRoot=true)
 	{
+		if($isRoot) {
+			if(stristr($map[0]['name'], ":fault")) {
+				throw new PPTransformerException("soapfault");
+			} else {
+				$map = $map[0]['children'];
+			}
+		}
+
 		if (empty($map)) {
 			return;
 		}
 
 		if (($first = reset($map)) && !is_array($first) && !is_numeric(key($map))) {
-			parent::init($map, $prefix);
+			parent::init($map, false);
 			return;
 		}
 
@@ -151,8 +173,12 @@ abstract class PPXmlMessage
 
 				$this->fillRelation($element['name'], $element);
 
-			} elseif (!empty($element['text'])) {
-				$this->{$element['name']} = $element['text'];
+			} elseif (isset($element['text']) && !is_null($element['text'])) {
+				if (isset($element['num'])) { 
+					$this->{$element['name']}[$element['num']] = $element['text'];
+				} else {
+					$this->{$element['name']} = $element['text'];
+				}
 
 			} elseif (!empty($element["children"]) && is_array($element["children"])) {
 				$this->fillRelation($element['name'], $element);
@@ -175,11 +201,11 @@ abstract class PPXmlMessage
 
 		if (isset($element['num'])) { // array of objects
 			$this->{$property}[$element['num']] = $item = new $type();
-			$item->init($element['children']);
+			$item->init($element['children'], false);
 
 		} else {
 			$this->{$property} = new $type();
-			$this->{$property}->init($element["children"]);
+			$this->{$property}->init($element["children"], false);
 		}
 	}
 

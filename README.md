@@ -25,7 +25,7 @@
 	);
 ```
    4. The access token is valid for a predefined duration and can be used for seamless XO or for retrieving user information
-
+ 
 
 ```php
    $user = PPOpenIdUserinfo::getUserinfo(

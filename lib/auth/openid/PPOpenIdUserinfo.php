@@ -387,7 +387,7 @@ class PPOpenIdUserinfo extends PPModel {
 			$call = new PPRestCall($apiContext);
 			$ret = new PPOpenIdUserinfo();
 			$ret->fromJson(
-				$call->execute(array('PPOpenIdHandler'), $requestUrl, "GET", "", 
+				$call->execute(array(new PPOpenIdHandler($apiContext)), $requestUrl, "GET", "", 
 					array(
 						'Authorization' => "Bearer " . $params['access_token'],
 						'Content-Type'=> 'x-www-form-urlencoded'

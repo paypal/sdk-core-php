@@ -1,6 +1,8 @@
 <?php
-class PPConstants
-{
+class PPConstants {
+    const SDK_NAME = 'sdk-core-php';
+    const SDK_VERSION = '1.5.0';
+
     const MERCHANT_SANDBOX_SIGNATURE_ENDPOINT = "https://api-3t.sandbox.paypal.com/2.0";
     const MERCHANT_SANDBOX_CERT_ENDPOINT = "https://api.sandbox.paypal.com/2.0";
     const PLATFORM_SANDBOX_ENDPOINT = "https://svcs.sandbox.paypal.com/";
@@ -15,4 +17,3 @@ class PPConstants
     const IPN_LIVE_ENDPOINT = "https://ipnpb.paypal.com/cgi-bin/webscr";
     const OPENID_REDIRECT_LIVE_URL = "https://www.paypal.com/webapps/auth/protocol/openidconnect";
 }
-
