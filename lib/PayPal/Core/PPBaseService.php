@@ -24,10 +24,11 @@ class PPBaseService {
 		return $this->serviceName;
 	}
 
-	public function __construct($serviceName, $serviceBinding, $config=null) {
+	public function __construct($serviceName, $serviceBinding, $handlers, $config=null) {
 		$this->serviceName = $serviceName;
 		$this->serviceBinding = $serviceBinding;
 		$this->config = $config;
+		$this->handlers = $handlers;
 	}
 
 	/**
@@ -38,7 +39,7 @@ class PPBaseService {
 	 * @param mixed $apiUserName - Optional API credential - can either be
 	 * 		a username configured in sdk_config.ini or a ICredential object created dynamically 		
 	 */
-	public function call($port, $method, $requestObject, $apiContext, $handlers) {
+	public function call($port, $method, $requestObject, $apiContext) {
 
 		if($apiContext == null)
 		{
@@ -50,7 +51,7 @@ class PPBaseService {
 		}
 
 		$service = new PPAPIService($port, $this->serviceName,
-				$this->serviceBinding, $apiContext, $handlers);
+				$this->serviceBinding, $apiContext, $this->handlers);
 		$ret = $service->makeRequest($method, new PPRequest($requestObject, $this->serviceBinding));
 		$this->lastRequest = $ret['request'];
 		$this->lastResponse = $ret['response'];
