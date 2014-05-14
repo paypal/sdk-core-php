@@ -45,7 +45,7 @@ class PPIPNMessage {
 		foreach ($rawPostArray as $keyValue) {
 			$keyValue = explode ('=', $keyValue);
 			if (count($keyValue) == 2)
-				$this->ipnData[$keyValue[0]] = urldecode($keyValue[1]);
+				$this->ipnData[urldecode($keyValue[0])] = urldecode($keyValue[1]);
 		}
 		//var_dump($this->ipnData);
 	}
@@ -80,8 +80,10 @@ class PPIPNMessage {
 			foreach ($this->ipnData as $key => $value) {
 				if($get_magic_quotes_exists) {
 					$value = urlencode(stripslashes($value));
+					$key = urlencode(stripslashes($key));
 				} else {
 					$value = urlencode($value);
+					$key = urlencode($key);					
 				}
 				$request .= "&$key=$value";
 			}
