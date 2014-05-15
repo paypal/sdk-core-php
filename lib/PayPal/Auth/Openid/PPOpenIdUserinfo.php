@@ -285,7 +285,7 @@ class PPOpenIdUserinfo extends PPModel {
 		 
 		/**
 		 * End-User's preferred address.
-		 * @param PayPal\Auth\OpenId\PPOpenIdAddress $address
+		 * @param PayPal\Auth\Openid\PPOpenIdAddress $address
 		 */
 		 public function setAddress($address) {
 		 	$this->address = $address;
@@ -294,7 +294,7 @@ class PPOpenIdUserinfo extends PPModel {
 		
 		/**
 		 * End-User's preferred address.
-		 * @return PayPal\Auth\OpenId\PPOpenIdAddress
+		 * @return PayPal\Auth\Openid\PPOpenIdAddress
 		 */
 		 public function getAddress() {
 		 	return $this->address;
