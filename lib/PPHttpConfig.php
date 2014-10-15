@@ -6,17 +6,17 @@ class PPHttpConfig {
 	 * These are typically overridden by PPConnectionManager
 	 */
 	public static $DEFAULT_CURL_OPTS = array(
-		CURLOPT_SSLVERSION => 3,
-		CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_SSL_CIPHER_LIST => 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA',
+        CURLOPT_CONNECTTIMEOUT => 10,
 		CURLOPT_RETURNTRANSFER => TRUE,
 		CURLOPT_TIMEOUT        => 60,	// maximum number of seconds to allow cURL functions to execute
 		CURLOPT_USERAGENT      => 'PayPal-PHP-SDK',
 		CURLOPT_HTTPHEADER     => array(),
 		CURLOPT_SSL_VERIFYHOST => 2,
 		CURLOPT_SSL_VERIFYPEER => 1
-	);	
-	
-	const HEADER_SEPARATOR = ';';	
+	);
+
+	const HEADER_SEPARATOR = ';';
 	const HTTP_GET = 'GET';
 	const HTTP_POST = 'POST';
 
@@ -33,7 +33,7 @@ class PPHttpConfig {
 	private $retryCount;
 
 	/**
-	 * 
+	 *
 	 * @param string $url
 	 * @param string $method  HTTP method (GET, POST etc) defaults to POST
 	 */
@@ -42,19 +42,19 @@ class PPHttpConfig {
 		$this->method = $method;
 		$this->curlOptions = self::$DEFAULT_CURL_OPTS;
 	}
-	
+
 	public function getUrl() {
 		return $this->url;
 	}
-	
+
 	public function getMethod() {
 		return $this->method;
 	}
-	
+
 	public function getHeaders() {
 		return $this->headers;
 	}
-	
+
 	public function getHeader($name) {
 		if(array_key_exists($name, $this->headers)) {
 			return $this->headers[$name];
@@ -65,7 +65,7 @@ class PPHttpConfig {
 	public function setUrl($url) {
 		$this->url = $url;
 	}
-	
+
 	public function setHeaders(array $headers) {
 		$this->headers = $headers;
 	}
@@ -74,16 +74,16 @@ class PPHttpConfig {
 		if(!array_key_exists($name, $this->headers) || $overWrite) {
 			$this->headers[$name] = $value;
 		} else {
-			$this->headers[$name] = $this->headers[$name] . self::HEADER_SEPARATOR . $value;			
+			$this->headers[$name] = $this->headers[$name] . self::HEADER_SEPARATOR . $value;
 		}
 	}
-	
+
 	public function removeHeader($name) {
 		unset($this->headers[$name]);
 	}
 
-	
-	
+
+
 	public function getCurlOptions() {
 		return $this->curlOptions;
 	}
@@ -96,14 +96,14 @@ class PPHttpConfig {
 		$this->curlOptions = $options;
 	}
 
-	
+
 
 	/**
 	 * Set ssl parameters for certificate based client authentication
 	 *
 	 * @param string $certPath - path to client certificate file (PEM formatted file)
 	 */
-	public function setSSLCert($certPath, $passPhrase=NULL) {		
+	public function setSSLCert($certPath, $passPhrase=NULL) {
 		$this->curlOptions[CURLOPT_SSLCERT] = realpath($certPath);
 		if(isset($passPhrase) && trim($passPhrase) != "") {
 			$this->curlOptions[CURLOPT_SSLCERTPASSWD] = $passPhrase;
@@ -133,19 +133,19 @@ class PPHttpConfig {
 			$this->curlOptions[CURLOPT_PROXY] .=  ":" . $urlParts["port"];
 		if(isset($urlParts["user"]))
 			$this->curlOptions[CURLOPT_PROXYUSERPWD]	= $urlParts["user"] . ":" . $urlParts["pass"];
-	}	
-	
+	}
+
 	/**
 	 * @param integer $retry
 	 */
 	public function setHttpRetryCount($retryCount) {
 		$this->retryCount = $retryCount;
-	}	
+	}
 
 	public function getHttpRetryCount() {
 		return $this->retryCount;
 	}
-	
+
 	/**
 	 * Sets the User-Agent string on the HTTP request
 	 * @param string $userAgentString
