@@ -10,7 +10,7 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
      * @var PPBaseService
      */
     protected $object;
-    
+
     private $config = array(
     		'acct1.UserName' => 'jb-us-seller_api1.paypal.com'	,
     		'acct1.Password' => 'WX4WTU3S8MY44S7F'	,
@@ -38,7 +38,7 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new PPBaseService('Invoice', 'NV', array(new MockHandler()), $this->config);
+        $this->object = new PPBaseService('Invoice', 'NV', $this->config, array(new MockHandler()));
     }
 
     /**
@@ -66,7 +66,6 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
     	$this->assertContains("responseEnvelope.timestamp=", $ret);
     	$this->assertEquals($req->toNVPString(), $this->object->getLastRequest());
     	$this->assertEquals($ret, $this->object->getLastResponse());
-    	
+
     }
 }
-?>
