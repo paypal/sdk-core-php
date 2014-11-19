@@ -1,4 +1,7 @@
 <?php
+
+require_once 'Mocks.php';
+
 use PayPal\Core\PPBaseService;
 /**
  * Test class for PPBaseService.
@@ -10,7 +13,7 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
      * @var PPBaseService
      */
     protected $object;
-    
+
     private $config = array(
     		'acct1.UserName' => 'jb-us-seller_api1.paypal.com'	,
     		'acct1.Password' => 'WX4WTU3S8MY44S7F'	,
@@ -38,7 +41,7 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new PPBaseService('Invoice', 'NV', array(new MockHandler()), $this->config);
+        $this->object = new PPBaseService('Invoice', 'NV', $this->config, array(new MockHandler()));
     }
 
     /**
@@ -66,7 +69,36 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
     	$this->assertContains("responseEnvelope.timestamp=", $ret);
     	$this->assertEquals($req->toNVPString(), $this->object->getLastRequest());
     	$this->assertEquals($ret, $this->object->getLastResponse());
-    	
+
+    }
+
+    public function testMakeRequestWithServiceHandlerAndCallHandler()
+    {
+        $handler = $this->getMock('\PayPal\Handler\IPPHandler');
+        $handler
+            ->expects($this->once())
+            ->method('handle');
+
+        $req = new MockNVPClass();
+        $ret = $this->object->call(null, 'GetInvoiceDetails', $req, null, array($handler));
+    }
+
+    public function testMultipleCallsDoesntIncludePreviousCallHandlers()
+    {
+        $firstHandler = $this->getMock('\PayPal\Handler\IPPHandler');
+        $firstHandler
+            ->expects($this->once())
+            ->method('handle');
+
+        $req = new MockNVPClass();
+        $ret = $this->object->call(null, 'GetInvoiceDetails', $req, null, array($firstHandler));
+
+        $secondHandler = $this->getMock('\PayPal\Handler\IPPHandler');
+        $secondHandler
+            ->expects($this->once())
+            ->method('handle');
+
+        $req = new MockNVPClass();
+        $ret = $this->object->call(null, 'GetInvoiceDetails', $req, null, array($secondHandler));
     }
 }
-?>

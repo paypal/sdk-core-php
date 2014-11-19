@@ -1,8 +1,11 @@
 <?php
+
+require_once 'Mocks.php';
+
 use PayPal\Core\PPAPIService;
 use PayPal\Core\PPRequest;
 use PayPal\Common\PPApiContext;
-use PayPal\Handler\IPPHandler;
+
 
 /**
  * Test class for PPAPIService.
@@ -14,7 +17,7 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
      * @var PPAPIService
      */
     protected $object;
-    
+
     private $config = array(
     		'acct1.UserName' => 'jb-us-seller_api1.paypal.com'	,
     		'acct1.Password' => 'WX4WTU3S8MY44S7F'	,
@@ -34,8 +37,8 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
     		'log.FileName' => 'PayPal.log'	,
     		'log.LogLevel' => 	'INFO'	,
     		'log.LogEnabled' => 	'1'	,
-    
-    
+
+
     );
 
     /**
@@ -59,7 +62,7 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
      * @test
      */
     public function testSetServiceName()
-    {  
+    {
     	$this->assertEquals('Invoice', $this->object->serviceName);
     	$this->object->setServiceName('AdaptiveAccounts');
         $this->assertEquals('AdaptiveAccounts', $this->object->serviceName);
@@ -73,8 +76,8 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
     	$this->setExpectedException('PayPal\Exception\PPConnectionException');
 	$req = new PPRequest(new MockNVPClass(), "NV");
 	$this->object->makeRequest('GetInvoiceDetails', $req);
-    }    
-    
+    }
+
     /**
      * @test
      */
@@ -82,29 +85,8 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
     	$this->object->addHandler(new MockHandler());
 	$req = new PPRequest(new MockNVPClass(), "NV");
     	$ret = $this->object->makeRequest('GetInvoiceDetails', $req);
-    	
+
     	$this->assertArrayHasKey('response', $ret);
     	$this->assertContains("responseEnvelope.timestamp=", $ret['response']);
     }
 }
-
-class MockNVPClass {
-	public function toNVPString() {
-		return 'invoiceID=INV2-6657-UHKM-3LWC-JHF7';
-	}
-}
-
-class MockHandler  implements IPPHandler {
-
-	public function handle($httpConfig, $request, $options) {
-		$config = $options['config'];
-		$httpConfig->setUrl('https://svcs.sandbox.paypal.com/Invoice/GetInvoiceDetails');
-		$httpConfig->addHeader('X-PAYPAL-REQUEST-DATA-FORMAT', 'NV');
-		$httpConfig->addHeader('X-PAYPAL-RESPONSE-DATA-FORMAT', 'NV');
-		$httpConfig->addHeader('X-PAYPAL-SECURITY-USERID', 'jb-us-seller_api1.paypal.com');
-		$httpConfig->addHeader('X-PAYPAL-SECURITY-PASSWORD', 'WX4WTU3S8MY44S7F');
-		$httpConfig->addHeader('X-PAYPAL-SECURITY-SIGNATURE', 'AFcWxV21C7fd0v3bYYYRCpSSRl31A7yDhhsPUU2XhtMoZXsWHFxu-RWy');
-	}
-
-}
-?>
