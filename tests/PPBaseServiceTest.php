@@ -82,4 +82,23 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
         $req = new MockNVPClass();
         $ret = $this->object->call(null, 'GetInvoiceDetails', $req, null, array($handler));
     }
+
+    public function testMultipleCallsDoesntIncludePreviousCallHandlers()
+    {
+        $firstHandler = $this->getMock('\PayPal\Handler\IPPHandler');
+        $firstHandler
+            ->expects($this->once())
+            ->method('handle');
+
+        $req = new MockNVPClass();
+        $ret = $this->object->call(null, 'GetInvoiceDetails', $req, null, array($firstHandler));
+
+        $secondHandler = $this->getMock('\PayPal\Handler\IPPHandler');
+        $secondHandler
+            ->expects($this->once())
+            ->method('handle');
+
+        $req = new MockNVPClass();
+        $ret = $this->object->call(null, 'GetInvoiceDetails', $req, null, array($secondHandler));
+    }
 }
