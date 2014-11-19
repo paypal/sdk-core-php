@@ -9,7 +9,7 @@ class PPBaseService {
 	private $serviceBinding;
 	private $handlers;
 
-	protected $config;		
+	protected $config;
 	protected $lastRequest;
 	protected $lastResponse;
 
@@ -32,18 +32,18 @@ class PPBaseService {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param string $method - API method to call
-	 * @param object $requestObject Request object 
+	 * @param object $requestObject Request object
 	 * @param apiContext $apiContext object containing credential and SOAP headers
      * @param array $handlers Array of Handlers
 	 * @param mixed $apiUserName - Optional API credential - can either be
-	 * 		a username configured in sdk_config.ini or a ICredential object created dynamically 		
+	 * 		a username configured in sdk_config.ini or a ICredential object created dynamically
 	 */
 	public function call($port, $method, $requestObject, $apiContext, $handlers = array()) {
 
         if (is_array($handlers)) {
-            $this->handlers = $this->handlers + $handlers;
+            $this->handlers = array_merge($this->handlers, $handlers);
         }
 
 		if($apiContext == null)
@@ -51,7 +51,7 @@ class PPBaseService {
 			$apiContext = new PPApiContext(PPConfigManager::getConfigWithDefaults($this->config));
 		}
  		if($apiContext->getConfig() == null )
-		{			
+		{
 			$apiContext->setConfig(PPConfigManager::getConfigWithDefaults($this->config));
 		}
 

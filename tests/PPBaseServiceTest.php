@@ -71,4 +71,15 @@ class PPBaseServiceTest extends \PHPUnit_Framework_TestCase
     	$this->assertEquals($ret, $this->object->getLastResponse());
 
     }
+
+    public function testMakeRequestWithServiceHandlerAndCallHandler()
+    {
+        $handler = $this->getMock('\PayPal\Handler\IPPHandler');
+        $handler
+            ->expects($this->once())
+            ->method('handle');
+
+        $req = new MockNVPClass();
+        $ret = $this->object->call(null, 'GetInvoiceDetails', $req, null, array($handler));
+    }
 }
