@@ -1,4 +1,7 @@
 <?php
+
+require_once 'Mocks.php';
+
 use PayPal\Core\PPBaseService;
 /**
  * Test class for PPBaseService.
