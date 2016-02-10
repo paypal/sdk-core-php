@@ -1,6 +1,7 @@
 <?php
 namespace PayPal\Core;
 use PayPal\Core\PPCredentialManager;
+use PayPal\Auth\PPTokenAuthorization;
 use PayPal\Auth\PPSignatureCredential;
 use PayPal\Auth\PPCertificateCredential;
 use PayPal\Auth\PPSubjectAuthorization;
@@ -111,9 +112,9 @@ class PPCredentialManager
 				$this->credentialHashmap[$userName]->setThirdPartyAuthorization(
 						new PPSubjectAuthorization($credArr[$key . ".Subject"]));
 			}
-			else if($userName && (isset($credArr[$key . 'accessToken']) && isset($credArr[$key . 'tokenSecret']))) {
+			else if($userName && (isset($credArr[$key . '.accessToken']) && isset($credArr[$key . '.tokenSecret']))) {
 				$this->credentialHashmap[$userName]->setThirdPartyAuthorization(
-						new PPTokenAuthorization($credArr[$key.'accessToken'], $credArr[$key.'tokenSecret']));
+						new PPTokenAuthorization($credArr[$key.'.accessToken'], $credArr[$key.'.tokenSecret']));
 			}
 			
 			if ($userName && $this->defaultAccountName == null) {
