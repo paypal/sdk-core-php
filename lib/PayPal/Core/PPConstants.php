@@ -1,7 +1,8 @@
 <?php
 namespace PayPal\Core;
 
-class PPConstants {
+class PPConstants
+{
     const SDK_NAME = 'sdk-core-php';
     const SDK_VERSION = '3.3.0';
 

@@ -6,7 +6,8 @@ namespace PayPal\Core;
  * Logging Levels.
  * Class containing all the constants for Logging Levels.
  */
-class PPLoggingLevel {
+class PPLoggingLevel
+{
 
     // FINE Logging Level
     const FINE = 3;

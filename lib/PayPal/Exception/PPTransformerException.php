@@ -1,17 +1,21 @@
 <?php
 namespace PayPal\Exception;
-class PPTransformerException extends \Exception{
 
-	public function __construct($message = null, $code = 0) {
-		parent::__construct($message, $code);
-	}
+class PPTransformerException
+  extends \Exception
+{
 
-	public function errorMessage()
-	{
-		$errorMsg = 'Error on line '.$this->getLine().' in '.$this->getFile()
-		.': <b>'.$this->getMessage().'</b>';
+    public function __construct($message = null, $code = 0)
+    {
+        parent::__construct($message, $code);
+    }
 
-		return $errorMsg;
-	}
+    public function errorMessage()
+    {
+        $errorMsg = 'Error on line ' . $this->getLine() . ' in ' . $this->getFile()
+          . ': <b>' . $this->getMessage() . '</b>';
+
+        return $errorMsg;
+    }
 
 }
