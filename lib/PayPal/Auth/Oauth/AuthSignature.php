@@ -1,7 +1,7 @@
 <?php
 namespace PayPal\Auth\Oauth;
 
-    //PayPal specific modification
+//PayPal specific modification
 //Method to be called for generating signature
 
 class AuthSignature
