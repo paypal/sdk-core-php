@@ -1,8 +1,13 @@
 <?php
 namespace PayPal\Exception;
+
 /* Generic exception class
  */
-class OAuthException extends \Exception {
-	// pass
+
+class OAuthException
+  extends \Exception
+{
+    // pass
 }
+
 ?>
