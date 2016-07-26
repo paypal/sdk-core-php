@@ -1,9 +1,9 @@
 <?php
-use PayPal\Auth\PPSignatureCredential;
-use PayPal\Auth\PPTokenAuthorization;
+use PayPal\Core\Auth\PPSignatureCredential;
+use PayPal\Core\Auth\PPTokenAuthorization;
 use PayPal\Core\PPHttpConfig;
 use PayPal\Core\PPRequest;
-use PayPal\Handler\PPAuthenticationHandler;
+use PayPal\Core\Handler\PPAuthenticationHandler;
 
 class PPAuthenticationHandlerTest extends PHPUnit_Framework_TestCase {
 	

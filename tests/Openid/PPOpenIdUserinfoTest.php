@@ -1,5 +1,5 @@
 <?php
-use PayPal\Auth\Openid\PPOpenIdUserinfo;
+use PayPal\Core\Auth\Openid\PPOpenIdUserinfo;
 /**
  * Test class for PPOpenIdUserinfo.
  *
@@ -50,7 +50,7 @@ class PPOpenIdUserinfoTest extends \PHPUnit_Framework_TestCase {
 	 * @test
 	 */
 	public function testInvalidParamUserInfoCall() {
-		$this->setExpectedException('PayPal\Exception\PPConnectionException');
+		$this->setExpectedException('PayPal\Core\Exception\PPConnectionException');
 		PPOpenIdUserinfo::getUserinfo(array('access_token' => 'accessToken'));
 	}
 }

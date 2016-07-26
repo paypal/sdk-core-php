@@ -4,7 +4,7 @@ require_once 'Mocks.php';
 
 use PayPal\Core\PPAPIService;
 use PayPal\Core\PPRequest;
-use PayPal\Common\PPApiContext;
+use PayPal\Core\Common\PPApiContext;
 
 
 /**
@@ -73,7 +73,7 @@ class PPAPIServiceTest extends \PHPUnit_Framework_TestCase
      */
     public function testMakeRequestWithoutHandlers() {
     	$this->object->setServiceName('Invoice');
-    	$this->setExpectedException('PayPal\Exception\PPConnectionException');
+    	$this->setExpectedException('PayPal\Core\Exception\PPConnectionException');
 	$req = new PPRequest(new MockNVPClass(), "NV");
 	$this->object->makeRequest('GetInvoiceDetails', $req);
     }

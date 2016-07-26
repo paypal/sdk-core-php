@@ -1,6 +1,6 @@
 <?php
 use PayPal\Core\PPRequest;
-use PayPal\Formatter\PPSOAPFormatter;
+use PayPal\Core\Formatter\PPSOAPFormatter;
 
 class PPSOAPFormatterTest extends PHPUnit_Framework_TestCase {
 	

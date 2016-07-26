@@ -1,5 +1,5 @@
 <?php
-use PayPal\IPN\PPIPNMessage;
+use PayPal\Core\IPN\PPIPNMessage;
 use PayPal\Core\PPConstants;
 /**
  * Test class for PPIPNMessage.
@@ -30,7 +30,7 @@ class PPIPNMessageTest extends \PHPUnit_Framework_TestCase {
 		$ipn = new PPIPNMessage($ipnData, array('service.EndPoint.IPN' => PPConstants::IPN_SANDBOX_ENDPOINT));
 		$this->assertEquals(false, $ipn->validate());
 
-		$this->setExpectedException('PayPal\Exception\PPConfigurationException');
+		$this->setExpectedException('PayPal\Core\Exception\PPConfigurationException');
 		$ipn = new PPIPNMessage($ipnData, array('mode' => 'invalid'));
 		$ipn->validate();
 

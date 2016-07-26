@@ -1,5 +1,5 @@
 <?php 
-use PayPal\Auth\Openid\PPOpenIdTokeninfo;
+use PayPal\Core\Auth\Openid\PPOpenIdTokeninfo;
 
 /**
  * Test class for PPOpenIdTokeninfo.

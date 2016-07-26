@@ -1,9 +1,9 @@
 <?php
-use PayPal\Auth\PPSignatureCredential;
+use PayPal\Core\Auth\PPSignatureCredential;
 use PayPal\Core\PPConstants;
 use PayPal\Core\PPHttpConfig;
 use PayPal\Core\PPRequest;
-use PayPal\Handler\PPPlatformServiceHandler;
+use PayPal\Core\Handler\PPPlatformServiceHandler;
 
 class PPPlatformServiceHandlerTest extends PHPUnit_Framework_TestCase {
 
@@ -116,13 +116,13 @@ class PPPlatformServiceHandlerTest extends PHPUnit_Framework_TestCase {
 		$httpConfig = new PPHttpConfig();
 		$handler = new PPPlatformServiceHandler(null, 'sdkname', 'sdkversion');
 		
-		$this->setExpectedException('PayPal\Exception\PPMissingCredentialException');
+		$this->setExpectedException('PayPal\Core\Exception\PPMissingCredentialException');
 		$handler->handle($httpConfig,
 				new PPRequest(new StdClass(), 'NV'),
 				array('config' => array())
 		);
 		
-		$this->setExpectedException('PayPal\Exception\PPConfigurationException');
+		$this->setExpectedException('PayPal\Core\Exception\PPConfigurationException');
 		$options = $this->options;
 		unset($options['mode']);
 		$handler->handle($httpConfig,

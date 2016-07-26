@@ -114,7 +114,7 @@ class PPHttpConfigTest extends PHPUnit_Framework_TestCase
     	$this->assertEquals('hostname:8081', $curlOpts[CURLOPT_PROXY]);
     	$this->assertEquals('me:secret', $curlOpts[CURLOPT_PROXYUSERPWD]);
     	
-    	$this->setExpectedException('PayPal\Exception\PPConfigurationException');
+    	$this->setExpectedException('PayPal\Core\Exception\PPConfigurationException');
     	$o->setHttpProxy('invalid string');
     }
 }

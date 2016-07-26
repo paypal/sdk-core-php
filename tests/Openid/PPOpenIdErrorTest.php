@@ -1,6 +1,6 @@
 <?php 
 
-use PayPal\Auth\Openid\PPOpenIdError;
+use PayPal\Core\Auth\Openid\PPOpenIdError;
 /**
  * Test class for PPOpenIdError.
  *

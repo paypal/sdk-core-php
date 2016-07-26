@@ -1,6 +1,6 @@
 <?php
 
-use PayPal\Handler\IPPHandler;
+use PayPal\Core\Handler\IPPHandler;
 
 class MockNVPClass {
     public function toNVPString() {

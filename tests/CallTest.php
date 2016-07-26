@@ -1,7 +1,7 @@
 <?php
 
-use PayPal\Auth\OAuthTokenCredential;
-use PayPal\Rest\Call;
+use PayPal\Core\Auth\OAuthTokenCredential;
+use PayPal\Core\Rest\Call;
 
 class CallTest  {
 

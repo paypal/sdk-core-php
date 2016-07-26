@@ -1,6 +1,6 @@
 <?php
 use PayPal\Core\PPRequest;
-use PayPal\Formatter\PPNVPFormatter;
+use PayPal\Core\Formatter\PPNVPFormatter;
 class PPNVPFormatterTest extends PHPUnit_Framework_TestCase {
 	
 	private $object;
