@@ -47,9 +47,9 @@ class PPCredentialManager
 	private function initCredential($config) {
 		$suffix = 1;
 		$prefix = "acct";
-		if(array_key_exists($prefix, $config))
+		if(array_key_exists($prefix, $this->config))
 		{
-			$credArr =  $this->config[$searchKey];
+			$credArr =  $this->config[$prefix];
 		}
 		else {
 			$arr = array();
