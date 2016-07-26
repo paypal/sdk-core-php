@@ -1,9 +1,10 @@
 <?php
-use PayPal\Common\PPApiContext;
+
+use PayPal\Core\Common\PPApiContext;
 use PayPal\Core\PPConstants;
 use PayPal\Core\PPHttpConfig;
 use PayPal\Core\PPRequest;
-use PayPal\Handler\PPOpenIdHandler;
+use PayPal\Core\Handler\PPOpenIdHandler;
 
 class PPOpenIdHandlerTest extends PHPUnit_Framework_TestCase {
 	
@@ -23,7 +24,7 @@ class PPOpenIdHandlerTest extends PHPUnit_Framework_TestCase {
 		$apiContext = new PPApiContext(array('mode' => 'unknown', 'acct1.ClientId' => 'clientId', 'acct1.ClientSecret' => 'clientSecret'));
 		$handler = new PPOpenIdHandler();
 	
-		$this->setExpectedException('PayPal\Exception\PPConfigurationException');
+		$this->setExpectedException('PayPal\Core\Exception\PPConfigurationException');
 		$handler->handle($httpConfig, 'payload', array('path' => '/path', 'apiContext' => $apiContext));
 		
 		
@@ -31,7 +32,7 @@ class PPOpenIdHandlerTest extends PHPUnit_Framework_TestCase {
 		$apiContext = new PPApiContext(array('acct1.ClientId' => 'clientId', 'acct1.ClientSecret' => 'clientSecret'));
 		$handler = new PPOpenIdHandler($apiContext);
 		
-		$this->setExpectedException('PayPal\Exception\PPConfigurationException');
+		$this->setExpectedException('PayPal\Core\Exception\PPConfigurationException');
 		$handler->handle($httpConfig, 'payload', array('path' => '/path', 'apiContext' => $apiContext));
 	}
 	

@@ -1,7 +1,8 @@
 <?php
+
 namespace PayPal\Core;
 
-use PayPal\Exception\PPTransformerException;
+use PayPal\Core\Exception\PPTransformerException;
 
 /**
  * @author 

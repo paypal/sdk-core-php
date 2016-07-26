@@ -1,5 +1,6 @@
 <?php
-use PayPal\Exception\PPMissingCredentialException;
+
+use PayPal\Core\Exception\PPMissingCredentialException;
 
 /**
  * Test class for PPMissingCredentialException.

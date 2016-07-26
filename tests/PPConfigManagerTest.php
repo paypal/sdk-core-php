@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\PPConfigManager;
 /**
  * Test class for PPConfigManager.

@@ -1,5 +1,5 @@
 <?php 
-use PayPal\Auth\Openid\PPOpenIdAddress;
+use PayPal\Core\Auth\Openid\PPOpenIdAddress;
 /**
  * Test class for PPOpenIdAddress.
  *

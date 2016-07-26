@@ -1,5 +1,6 @@
 <?php
-use PayPal\Exception\PPConnectionException;
+
+use PayPal\Core\Exception\PPConnectionException;
 /**
  * Test class for PPConnectionException.
  *

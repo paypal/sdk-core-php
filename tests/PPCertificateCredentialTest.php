@@ -1,6 +1,7 @@
 <?php
-use PayPal\Auth\PPCertificateCredential;
-use PayPal\Exception\PPMissingCredentialException;
+
+use PayPal\Core\Auth\PPCertificateCredential;
+use PayPal\Core\Exception\PPMissingCredentialException;
 /**
  * Test class for PPCertificateCredential.
  *
@@ -34,7 +35,7 @@ class PPCertificateCredentialTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateUname()
 	{
-		$this->setExpectedException('PayPal\Exception\PPMissingCredentialException');
+		$this->setExpectedException('PayPal\Core\Exception\PPMissingCredentialException');
 		$credUname = new PPCertificateCredential("", "1255077037", "cacert.pem");
 		$credUname->validate();
 		$setNotExpectedException('PPMissingCredentialException');
@@ -47,7 +48,7 @@ class PPCertificateCredentialTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidatePwd()
 	{
-		$this->setExpectedException('PayPal\Exception\PPMissingCredentialException');
+		$this->setExpectedException('PayPal\Core\Exception\PPMissingCredentialException');
 		$credpwd = new PPCertificateCredential("platfo_1255077030_biz_api1.gmail.com", "", "cacert.pem");
 		$credpwd->validate();
 
@@ -57,7 +58,7 @@ class PPCertificateCredentialTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testValidateCertPath()
 	{
-		$this->setExpectedException('PayPal\Exception\PPMissingCredentialException');
+		$this->setExpectedException('PayPal\Core\Exception\PPMissingCredentialException');
 		$credCertPath = new PPCertificateCredential("platfo_1255077030_biz_api1.gmail.com", "1255077037", "");
 		$credCertPath->validate();
 	}

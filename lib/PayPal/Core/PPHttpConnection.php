@@ -1,8 +1,9 @@
 <?php
+
 namespace PayPal\Core;
 use PayPal\Core\PPLoggingManager;
-use PayPal\Exception\PPConfigurationException;
-use PayPal\Exception\PPConnectionException;
+use PayPal\Core\Exception\PPConfigurationException;
+use PayPal\Core\Exception\PPConnectionException;
 
 /**
  * A wrapper class based on the curl extension.

@@ -1,11 +1,12 @@
 <?php
+
 namespace PayPal\Core;
-use PayPal\Core\PPCredentialManager;
-use PayPal\Auth\PPSignatureCredential;
-use PayPal\Auth\PPCertificateCredential;
-use PayPal\Auth\PPSubjectAuthorization;
-use PayPal\Exception\PPInvalidCredentialException;
-use PayPal\Exception\PPMissingCredentialException;
+
+use PayPal\Core\Auth\PPSignatureCredential;
+use PayPal\Core\Auth\PPCertificateCredential;
+use PayPal\Core\Auth\PPSubjectAuthorization;
+use PayPal\Core\Exception\PPInvalidCredentialException;
+use PayPal\Core\Exception\PPMissingCredentialException;
 
 class PPCredentialManager
 {
@@ -47,9 +48,9 @@ class PPCredentialManager
 	private function initCredential($config) {
 		$suffix = 1;
 		$prefix = "acct";
-		if(array_key_exists($prefix, $config))
+		if(array_key_exists($prefix, $this->config))
 		{
-			$credArr =  $this->config[$searchKey];
+			$credArr =  $this->config[$prefix];
 		}
 		else {
 			$arr = array();

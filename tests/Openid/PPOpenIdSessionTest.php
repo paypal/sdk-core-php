@@ -1,6 +1,7 @@
 <?php
-use PayPal\Common\PPApiContext;
-use PayPal\Auth\Openid\PPOpenIdSession;
+
+use PayPal\Core\Common\PPApiContext;
+use PayPal\Core\Auth\Openid\PPOpenIdSession;
 /**
  * Test class for PPOpenIdSession.
  *

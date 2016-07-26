@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\PPLoggingManager;
 /**
  * Test class for PPLoggingManager.

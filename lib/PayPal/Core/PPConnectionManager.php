@@ -1,7 +1,7 @@
 <?php
+
 namespace PayPal\Core;
-use PayPal\Core\PPConnectionManager;
-use PayPal\Core\PPHttpConnection;
+
 class PPConnectionManager
 {
 	/**

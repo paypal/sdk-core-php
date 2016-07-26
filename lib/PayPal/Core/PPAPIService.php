@@ -1,12 +1,8 @@
 <?php
+
 namespace PayPal\Core;
 
-use PayPal\Core\PPLoggingManager;
-use PayPal\Formatter\FormatterFactory;
-use PayPal\Core\PPRequest;
-use PayPal\Core\PPHttpConfig;
-use PayPal\Handler\PPAuthenticationHandler;
-use PayPal\Auth\PPTokenAuthorization;
+use PayPal\Core\Formatter\FormatterFactory;
 
 class PPAPIService {
 
@@ -38,7 +34,7 @@ class PPAPIService {
 	 * Register additional handlers to run before
 	 * executing this call
 	 *
-	 * @param IPPHandler $handler
+	 * @param \PayPal\Core\Handler\IPPHandler $handler
 	 */
 	public function addHandler($handler) {
 		$this->handlers[] = $handler;

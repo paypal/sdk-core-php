@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core;
 class PPUtils
 {
@@ -107,7 +108,7 @@ class PPUtils
 	 * Convert a DOM node to an intermediate nested array
 	 * representation that can be iterated
 	 * 
-	 * @param DOMNode $node	DOM node to convert
+	 * @param \DOMNode $node	DOM node to convert
 	 */
 	private static function xmlNodeToArray($node)
 	{
@@ -194,7 +195,7 @@ class PPUtils
 
 
 	/**
-	 * @var array|ReflectionProperty[]
+	 * @var array|\ReflectionProperty[]
 	 */
 	private static $propertiesRefl = array();
 
@@ -210,7 +211,7 @@ class PPUtils
 	 *
 	 * @param string $class
 	 * @param string $propertyName
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 * @return string
 	 */
 	public static function propertyAnnotations($class, $propertyName)
@@ -282,7 +283,7 @@ class PPUtils
 	 *
 	 * @param string $class
 	 * @param string $propertyName
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 * @return string
 	 */
 	public static function propertyType($class, $propertyName)

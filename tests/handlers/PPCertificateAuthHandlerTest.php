@@ -1,8 +1,9 @@
 <?php
-use PayPal\Auth\PPCertificateCredential;
-use PayPal\Auth\PPSubjectAuthorization;
-use PayPal\Auth\PPTokenAuthorization;
-use PayPal\Handler\PPCertificateAuthHandler;
+
+use PayPal\Core\Auth\PPCertificateCredential;
+use PayPal\Core\Auth\PPSubjectAuthorization;
+use PayPal\Core\Auth\PPTokenAuthorization;
+use PayPal\Core\Handler\PPCertificateAuthHandler;
 use PayPal\Core\PPHttpConfig;
 use PayPal\Core\PPRequest;
 

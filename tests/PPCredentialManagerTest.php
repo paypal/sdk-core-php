@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\PPCredentialManager;
 /**
  * Test class for PPCredentialManager.
@@ -80,7 +81,7 @@ class PPCredentialManagerTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testGetInvalidCredentialObject()
 	{
-		$this->setExpectedException('PayPal\Exception\PPInvalidCredentialException');
+		$this->setExpectedException('PayPal\Core\Exception\PPInvalidCredentialException');
 		$cred = $this->object->getCredentialObject('invalid_biz_api1.gmail.com');
 	}
 		
@@ -124,7 +125,7 @@ class PPCredentialManagerTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotNull($cred);
 		$this->assertNotNull($cred->getThirdPartyAuthorization());
-		$this->assertEquals('PayPal\Auth\PPSubjectAuthorization', get_class($cred->getThirdPartyAuthorization()));
+		$this->assertEquals('PayPal\Core\Auth\PPSubjectAuthorization', get_class($cred->getThirdPartyAuthorization()));
 	}
 	
 	/**
@@ -146,7 +147,7 @@ class PPCredentialManagerTest extends \PHPUnit_Framework_TestCase
 	 * @test
 	 */
 	public function testInvalidConfiguration() {
-		$this->setExpectedException('PayPal\Exception\PPMissingCredentialException');
+		$this->setExpectedException('PayPal\Core\Exception\PPMissingCredentialException');
 		$o = PPCredentialManager::getInstance(array('mode' => 'sandbox'));
 	}
 }

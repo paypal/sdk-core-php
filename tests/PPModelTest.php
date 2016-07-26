@@ -1,6 +1,6 @@
 <?php
 
-use PayPal\Common\PPModel;
+use PayPal\Core\Common\PPModel;
 
 class SimpleModelTestClass extends PPModel {
 	/**

@@ -1,8 +1,8 @@
 <?php
+
 namespace PayPal\Core;
 
-use PayPal\Core\PPAPIService;
-use PayPal\Common\PPApiContext;
+use PayPal\Core\Common\PPApiContext;
 
 class PPBaseService {
 
@@ -36,7 +36,7 @@ class PPBaseService {
 	 *
 	 * @param string $method - API method to call
 	 * @param object $requestObject Request object
-	 * @param apiContext $apiContext object containing credential and SOAP headers
+	 * @param \PayPal\Core\Common\PPApiContext $apiContext object containing credential and SOAP headers
 	 * @param array $handlers Array of Handlers
 	 * @param mixed $apiUserName - Optional API credential - can either be
 	 * 		a username configured in sdk_config.ini or a ICredential object created dynamically

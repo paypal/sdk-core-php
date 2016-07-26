@@ -1,13 +1,14 @@
 <?php
-use PayPal\Formatter\FormatterFactory;
+
+use PayPal\Core\Formatter\FormatterFactory;
 class FormatterFactoryTest extends PHPUnit_Framework_TestCase {
 	
 	/**
 	 * @test
 	 */
 	public function testValidBinding() {
-		$this->assertEquals('PayPal\Formatter\PPNVPFormatter', get_class(FormatterFactory::factory('NV')));
-		$this->assertEquals('PayPal\Formatter\PPSOAPFormatter', get_class(FormatterFactory::factory('SOAP')));
+		$this->assertEquals('PayPal\Core\Formatter\PPNVPFormatter', get_class(FormatterFactory::factory('NV')));
+		$this->assertEquals('PayPal\Core\Formatter\PPSOAPFormatter', get_class(FormatterFactory::factory('SOAP')));
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-use PayPal\Handler\PPGenericServiceHandler;
+use PayPal\Core\Handler\PPGenericServiceHandler;
 use PayPal\Core\PPHttpConfig;
 use PayPal\Core\PPRequest;
 
