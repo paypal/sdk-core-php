@@ -1,7 +1,6 @@
 <?php
 namespace PayPal\Core;
 
-use PayPal\Core\PPAPIService;
 use PayPal\Core\Common\PPApiContext;
 
 class PPBaseService {

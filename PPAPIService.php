@@ -1,12 +1,7 @@
 <?php
 namespace PayPal\Core;
 
-use PayPal\Core\PPLoggingManager;
 use PayPal\Core\Formatter\FormatterFactory;
-use PayPal\Core\PPRequest;
-use PayPal\Core\PPHttpConfig;
-use PayPal\Core\Handler\PPAuthenticationHandler;
-use PayPal\Core\Auth\PPTokenAuthorization;
 
 class PPAPIService {
 

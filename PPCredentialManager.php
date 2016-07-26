@@ -1,6 +1,6 @@
 <?php
 namespace PayPal\Core;
-use PayPal\Core\PPCredentialManager;
+
 use PayPal\Core\Auth\PPSignatureCredential;
 use PayPal\Core\Auth\PPCertificateCredential;
 use PayPal\Core\Auth\PPSubjectAuthorization;
