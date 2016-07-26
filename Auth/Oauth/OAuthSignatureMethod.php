@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth\Oauth;
 /**
  * A class for implementing a Signature Method

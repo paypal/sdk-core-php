@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Formatter;
 class PPSOAPFormatter implements IPPFormatter {
 	

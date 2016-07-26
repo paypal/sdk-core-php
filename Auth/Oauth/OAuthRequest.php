@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth\Oauth;
 use PayPal\Core\Exception\OAuthException;
 class OAuthRequest {

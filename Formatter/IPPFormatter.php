@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Formatter;
 /**
  * Interface for all classes that format objects to

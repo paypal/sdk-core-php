@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\PPCredentialManager;
 /**
  * Test class for PPCredentialManager.

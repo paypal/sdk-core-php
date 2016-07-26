@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth\Oauth;
 class OAuthToken {
 	// access tokens and request tokens

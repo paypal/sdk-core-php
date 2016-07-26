@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core;
 /**
  * Encapsulates API request information

@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth;
 /**
  * Interface that represents API credentials

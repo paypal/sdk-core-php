@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\Auth\PPSignatureCredential;
 use PayPal\Core\PPConstants;
 use PayPal\Core\PPHttpConfig;

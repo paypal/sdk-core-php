@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\PPHttpConfig;
 /**
  * Test class for PPAPIService.

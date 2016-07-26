@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth\Oauth;
 /**
  * The PLAINTEXT method does not provide any security protection and SHOULD only be used

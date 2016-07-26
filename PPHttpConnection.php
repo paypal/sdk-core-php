@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core;
 use PayPal\Core\PPLoggingManager;
 use PayPal\Core\Exception\PPConfigurationException;

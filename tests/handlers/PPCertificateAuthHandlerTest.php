@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\Auth\PPCertificateCredential;
 use PayPal\Core\Auth\PPSubjectAuthorization;
 use PayPal\Core\Auth\PPTokenAuthorization;

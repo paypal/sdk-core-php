@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Exception;
 class PPConfigurationException extends \Exception {
 

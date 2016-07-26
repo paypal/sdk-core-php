@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\IPN;
 use PayPal\Core\PPHttpConfig;
 use PayPal\Core\Exception\PPConfigurationException;

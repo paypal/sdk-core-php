@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Handler;
 
 use PayPal\Core\PPConstants;

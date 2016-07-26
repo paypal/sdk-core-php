@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Exception;
 
 class PPInvalidCredentialException extends \Exception{

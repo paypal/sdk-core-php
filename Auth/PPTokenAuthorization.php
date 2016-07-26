@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth;
 use PayPal\Core\Auth\IPPThirdPartyAuthorization;
 /**

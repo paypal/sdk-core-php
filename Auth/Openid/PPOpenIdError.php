@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth\Openid;
 use PayPal\Core\Common\PPModel;
 /**

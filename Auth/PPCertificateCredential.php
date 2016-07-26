@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth;
 use PayPal\Core\Exception\PPMissingCredentialException;
 use PayPal\Core\Auth\IPPCredential;

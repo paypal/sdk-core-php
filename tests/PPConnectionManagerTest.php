@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\PPConnectionManager;
 use PayPal\Core\PPHttpConnection;
 use PayPal\Core\PPHttpConfig;

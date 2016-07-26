@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth\Oauth;
 class OAuthDataStore {
 	function lookup_consumer($consumer_key) {

@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\Formatter\FormatterFactory;
 class FormatterFactoryTest extends PHPUnit_Framework_TestCase {
 	

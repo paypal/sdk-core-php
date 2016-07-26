@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Transport;
 use PayPal\Core\PPLoggingManager;
 use PayPal\Core\PPHttpConfig;

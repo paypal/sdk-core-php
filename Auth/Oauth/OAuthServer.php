@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth\Oauth;
 class OAuthServer {
 	protected $timestamp_threshold = 300; // in seconds, five minutes

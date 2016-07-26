@@ -1,4 +1,5 @@
 <?php
+
 namespace PayPal\Core\Auth\Oauth;
 //PayPal specific modification
 //Method to be called for generating signature

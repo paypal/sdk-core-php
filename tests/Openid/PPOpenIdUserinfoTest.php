@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\Auth\Openid\PPOpenIdUserinfo;
 /**
  * Test class for PPOpenIdUserinfo.

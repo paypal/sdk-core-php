@@ -1,4 +1,5 @@
 <?php
+
 use PayPal\Core\Exception\PPConfigurationException;
 /**
  * Test class for PPConfigurationException.
