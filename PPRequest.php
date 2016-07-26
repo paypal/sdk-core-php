@@ -16,6 +16,9 @@ class PPRequest {
 	/**
 	 * Optional credentials associated with
 	 * the request
+	 *
+	 * TODO: Import ICredential class?
+	 *
 	 * @var ICredential
 	 */
 	private $credential;

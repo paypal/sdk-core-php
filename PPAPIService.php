@@ -33,7 +33,7 @@ class PPAPIService {
 	 * Register additional handlers to run before
 	 * executing this call
 	 *
-	 * @param IPPHandler $handler
+	 * @param \PayPal\Core\Handler\IPPHandler $handler
 	 */
 	public function addHandler($handler) {
 		$this->handlers[] = $handler;
