@@ -150,7 +150,7 @@ class PPHttpConfig
      */
     public function setHttpTimeout($timeout)
     {
-        $this->curlOptions[CURLOPT_CONNECTTIMEOUT] = $timeout;
+        $this->curlOptions[CURLOPT_TIMEOUT] = $timeout;
     }
 
     /**
