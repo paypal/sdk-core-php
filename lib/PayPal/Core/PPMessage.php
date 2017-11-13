@@ -61,21 +61,21 @@ abstract class PPMessage
         $map = PPUtils::lowerKeys($map);
 
         foreach (get_object_vars($this) as $property => $defaultValue) {
-            if (array_key_exists($propKey = strtolower($prefix . $property), $map) &&
-              $this->isBuiltInType(($type = PPUtils::propertyType($this, $property)))
-            ) {
-                $type              = PPUtils::propertyType($this, $property);
+            $type = PPUtils::propertyType($this, $property);
+            $propKey = strtolower($prefix . $property);
+            $filtered = PPUtils::filterKeyPrefix($map, $propKey);
+            if (array_key_exists($propKey, $map) && $this->isBuiltInType($type)) {
                 $this->{$property} = urldecode($map[$propKey]);
                 continue; // string
-
-            } elseif (!$filtered = PPUtils::filterKeyPrefix($map, $propKey)) {
+            } elseif (!$filtered) {
                 continue; // NULL
             }
 
-            $type = PPUtils::propertyType($this, $property);
-            if (!$this->isBuiltInType($type) && !class_exists($type)) {
-                trigger_error("Class $type not found.", E_USER_NOTICE);
-                continue; // just ignore
+            if (!$this->isBuiltInType($type)) {
+                if (!class_exists($type)) {
+                  trigger_error("Class $type not found.", E_USER_NOTICE);
+                  continue; // just ignore
+                }
             }
 
             if (is_array($defaultValue) || PPUtils::isPropertyArray($this, $property)) { // array of objects
