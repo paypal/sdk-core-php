@@ -65,6 +65,8 @@ class PPMerchantServiceHandler
                 } else if ($credential instanceof PPCertificateCredential) {
                     $endpoint = PPConstants::MERCHANT_TLS_CERT_ENDPOINT;
                 }
+            } else {
+                throw new PPConfigurationException('mode Not exist');
             }
         } else {
             throw new PPConfigurationException('endpoint Not Set');
