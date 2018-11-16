@@ -54,7 +54,7 @@ class PPIPNMessage
         foreach ($rawPostArray as $keyValue) {
             $keyValue = explode('=', $keyValue);
             if (count($keyValue) == 2) {
-                $this->ipnData[$keyValue[0]] = urldecode($keyValue[1]);
+                $this->ipnData[urldecode($keyValue[0])] = urldecode($keyValue[1]);
             }
         }
         //var_dump($this->ipnData);
