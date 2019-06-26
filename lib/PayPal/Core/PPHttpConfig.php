@@ -11,7 +11,7 @@ class PPHttpConfig
      * These are typically overridden by PPConnectionManager
      */
     public static $DEFAULT_CURL_OPTS = array(
-      CURLOPT_SSLVERSION      => 6,
+      CURLOPT_SSLVERSION      => CURL_SSLVERSION_TLSv1_2,
       CURLOPT_CONNECTTIMEOUT  => 10,
       CURLOPT_RETURNTRANSFER  => true,
       CURLOPT_TIMEOUT         => 60,  // maximum number of seconds to allow cURL functions to execute
@@ -221,10 +221,11 @@ class PPHttpConfig
     {
         $arr = array();
         if ($prefix != null && is_array($configs)) {
+            $prefixLen = strlen($prefix);
             foreach ($configs as $k => $v) {
                 // Check if it startsWith
-                if (substr($k, 0, strlen($prefix)) === $prefix) {
-                    $newKey = ltrim($k, $prefix);
+                if (substr($k, 0, $prefixLen) === $prefix) {
+                    $newKey = substr($k, $prefixLen);
                     if (defined($newKey)) {
                         $arr[constant($newKey)] = $v;
                     }
