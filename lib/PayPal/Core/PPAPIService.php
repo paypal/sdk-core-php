@@ -54,8 +54,9 @@ class PPAPIService
     {
 
         $this->apiMethod = $apiMethod;
+        $contextConfig = $this->apiContext->getConfig();
 
-        $httpConfig = new PPHttpConfig(null, PPHttpConfig::HTTP_POST);
+        $httpConfig = new PPHttpConfig(null, PPHttpConfig::HTTP_POST, $contextConfig);
         if ($this->apiContext->getHttpHeaders() != null) {
             $httpConfig->setHeaders($this->apiContext->getHttpHeaders());
         }
@@ -66,7 +67,7 @@ class PPAPIService
         $payload   = $formatter->toString($request);
 
         // Execute HTTP call
-        $connection = PPConnectionManager::getInstance()->getConnection($httpConfig, $this->apiContext->getConfig());
+        $connection = PPConnectionManager::getInstance()->getConnection($httpConfig, $contextConfig);
         $this->logger->info("Request: $payload");
         $response = $connection->execute($payload);
         $this->logger->info("Response: $response");
