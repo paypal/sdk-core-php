@@ -25,6 +25,26 @@ class PPUtils
     }
 
     /**
+     *
+     * Convert a Name Value Pair (NVP) formatted
+     * string int an associative array
+     *
+     * @param string $nvpString
+     *
+     * @return array
+     */
+    public static function nvpToMapWithoutUrlDecode($nvpString)
+    {
+        $ret    = array();
+        $params = explode("&", $nvpString);
+        foreach ($params as $p) {
+            list($k, $v) = explode("=", $p);
+            $ret[$k] = $v;
+        }
+        return $ret;
+    }
+
+    /**
      * Returns true if the array contains a key like $key
      *
      * @param array  $map
