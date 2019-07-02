@@ -1,16 +1,18 @@
 <?php
+
+use PayPal\Log\PPLogFactory;
+use PayPal\Log\PPLogger;
 use PayPal\Core\PPLoggingManager;
 use PHPUnit\Framework\TestCase;
 /**
  * Test class for PPLoggingManager.
- *
  */
 class PPLoggingManagerTest extends TestCase
 {
     /**
      * @var PPLoggingManager
      */
-    protected $object;
+    protected $logging_manager;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -18,15 +20,7 @@ class PPLoggingManagerTest extends TestCase
      */
     protected function setUp()
     {
-        $this->object = new PPLoggingManager('InvoiceTest');
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
+        $this->logging_manager = new PPLoggingManager('InvoiceTest');
     }
 
     /**
@@ -34,8 +28,7 @@ class PPLoggingManagerTest extends TestCase
      */
     public function testError()
     {
-    	 $this->object->error('Test Error Message');
-
+    	 $this->logging_manager->error('Test Error Message');
     }
 
     /**
@@ -43,7 +36,7 @@ class PPLoggingManagerTest extends TestCase
      */
     public function testWarning()
     {
-         $this->object->warning('Test Warning Message');
+         $this->logging_manager->warning('Test Warning Message');
     }
 
     /**
@@ -51,7 +44,7 @@ class PPLoggingManagerTest extends TestCase
      */
     public function testInfo()
     {
-        $this->object->info('Test info Message');
+        $this->logging_manager->info('Test info Message');
     }
 
     /**
@@ -59,7 +52,41 @@ class PPLoggingManagerTest extends TestCase
      */
     public function testFine()
     {
-       $this->object->fine('Test fine Message');
+       $this->logging_manager->fine('Test fine Message');
+    }
+
+    /**
+     * @test
+     */
+    public function testGetLogger()
+    {
+        $logger = $this->logging_manager->getLogger();
+        $this->assertInstanceOf('\Psr\Log\LoggerInterface', $logger);
+        $this->assertInstanceOf('\PayPal\Log\PPLogger', $logger);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetLoggerConfigured()
+    {
+        $factory = 'TestLogFactory';
+        $this->assertContains('PayPal\Log\PPLogFactory', class_implements($factory));
+        $logging_manager = new PPLoggingManager('InvoiceTest', array(
+            'log.AdapterFactory' => $factory
+        ));
+
+        $logger = $logging_manager->getLogger();
+        $this->assertInstanceOf('\Psr\Log\LoggerInterface', $logger);
+        $this->assertInstanceOf('\TestLogger', $logger);
     }
 }
-?>
+
+class TestLogFactory implements PPLogFactory {
+    public function getLogger($className) {
+        return new TestLogger($className);
+    }
+}
+
+class TestLogger extends PPLogger {
+}

@@ -1,82 +1,111 @@
 <?php
+
 namespace PayPal\Core;
+
+use PayPal\Log\PayPalLogFactory;
+use PayPal\Log\PPLogFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * Simple Logging Manager.
- * This does an error_log for now
- * Potential frameworks to use are PEAR logger, log4php from Apache
+ * This can be configured with any PSR logger via log.AdapterFactory config
  */
 class PPLoggingManager
 {
+    /**
+     * The logger to be used for all messages
+     *
+     * @var LoggerInterface
+     */
+    private $logger;
 
-    // Default Logging Level
-    const DEFAULT_LOGGING_LEVEL = 0;
-
-    // Logger name
+    /**
+     * Logger Name
+     *
+     * @var string
+     */
     private $loggerName;
 
-    // Log enabled
-    private $isLoggingEnabled;
+    /**
+     * Config map
+     */
+    private $config;
 
-    // Configured logging level
-    private $loggingLevel;
-
-    // Configured logging file
-    private $loggerFile;
-    
-    //log message
-    private $loggerMessage;
     public function __construct($loggerName, $config = null)
     {
+        $config = PPConfigManager::getInstance()->getConfigWithDefaults($config);
+        // Checks if custom factory defined, and is it an implementation of @PPLogFactory
+        $factory = '\PayPal\Log\PPDefaultLogFactory';
+        if (array_key_exists('log.AdapterFactory', $config)
+            && in_array('PayPal\Log\PPLogFactory', class_implements($config['log.AdapterFactory']))) {
+            $factory = $config['log.AdapterFactory'];
+        }
+
+        /** @var PPLogFactory $factoryInstance */
+        $factoryInstance = new $factory($config);
+        $this->logger = $factoryInstance->getLogger($loggerName);
         $this->loggerName = $loggerName;
-        $config           = PPConfigManager::getConfigWithDefaults($config);
-
-        $this->isLoggingEnabled = (array_key_exists('log.LogEnabled', $config) && $config['log.LogEnabled'] == '1');
-
-        if ($this->isLoggingEnabled) {
-            $this->loggerFile   = ($config['log.FileName']) ? $config['log.FileName'] : ini_get('error_log');
-            $loggingLevel       = strtoupper($config['log.LogLevel']);
-            $this->loggingLevel = (isset($loggingLevel) && defined(__NAMESPACE__ . "\\PPLoggingLevel::$loggingLevel")) ? constant(__NAMESPACE__ . "\\PPLoggingLevel::$loggingLevel") : PPLoggingManager::DEFAULT_LOGGING_LEVEL;
-        }
+        $this->config = $config;
     }
 
-    public function __destruct()
-    {
-        $this->flush();
-    }
- 
-    public function flush()
-    {
-        if($this->loggerMessage) {
-            error_log($this->loggerMessage, 3, $this->loggerFile);
-        }
-    }
-
-    private function log($message, $level = PPLoggingLevel::INFO)
-    {
-        if ($this->isLoggingEnabled && ($level <= $this->loggingLevel)) {
-            $this->loggerMessage .= $this->loggerName . ": $message\n";
-        }
-    }
-
+    /**
+     * Log Error
+     *
+     * @param string $message
+     */
     public function error($message)
     {
-        $this->log($message, PPLoggingLevel::ERROR);
+        $this->logger->error($message);
     }
 
+    /**
+     * Log Warning
+     *
+     * @param string $message
+     */
     public function warning($message)
     {
-        $this->log($message, PPLoggingLevel::WARN);
+        $this->logger->warning($message);
     }
 
+    /**
+     * Log Info
+     *
+     * @param string $message
+     */
     public function info($message)
     {
-        $this->log($message, PPLoggingLevel::INFO);
+        $this->logger->info($message);
     }
 
+    /**
+     * Log Fine
+     *
+     * @param string $message
+     */
     public function fine($message)
     {
-        $this->log($message, PPLoggingLevel::FINE);
+        $this->info($message);
     }
 
+    /**
+     * Log Debug
+     *
+     * @param string $message
+     */
+    public function debug($message)
+    {
+        // Disable debug in live mode.
+        if (array_key_exists('mode', $this->config) && $this->config['mode'] != 'live') {
+            $this->logger->debug($message);
+        }
+    }
+
+    /**
+     * Fetch the logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+	}
 }
