@@ -26,6 +26,7 @@ class PPConnectionManager
      */
     public function getConnection($httpConfig, $config)
     {
+        /** @var PPHttpConfig $httpConfig */
         if (isset($config["http.ConnectionTimeOut"])) {
             $httpConfig->setHttpConnectionTimeout($config["http.ConnectionTimeOut"]);
         }
@@ -38,6 +39,10 @@ class PPConnectionManager
         if (isset($config["http.Retry"])) {
             $retry = $config["http.Retry"];
             $httpConfig->setHttpRetryCount($retry);
+        }
+        if (isset($config["http.RetryInformCallback"])) {
+            $retryCallback = $config["http.RetryInformCallback"];
+            $httpConfig->setRetryInformCallback($retryCallback);
         }
 
         return new PPHttpConnection($httpConfig, $config);

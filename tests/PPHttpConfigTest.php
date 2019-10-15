@@ -119,5 +119,18 @@ class PPHttpConfigTest extends TestCase
     	$this->setExpectedException('PayPal\Exception\PPConfigurationException');
     	$o->setHttpProxy('invalid string');
     }
+
+    public function testInformCallBack()
+	{
+		$test = 0;
+		$config = new PPHttpConfig();
+		$config->setRetryInformCallback(function () use (&$test) {
+			$test = 2;
+		});
+		$args = array($test);
+		call_user_func_array($config->getRetryInformCallback(), $args);
+
+		$this->assertEquals(2, $test);
+	}
 }
 ?>

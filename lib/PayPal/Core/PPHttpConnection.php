@@ -32,6 +32,14 @@ class PPHttpConnection
         $this->logger     = new PPLoggingManager(__CLASS__, $config);
     }
 
+    /**
+     * @return mixed
+     */
+    public function getHttpConfig()
+    {
+        return $this->httpConfig;
+    }
+
     private function getHttpHeaders()
     {
 
@@ -90,6 +98,9 @@ class PPHttpConnection
             do {
                 $result     = curl_exec($ch);
                 $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                if ($retries > 0) {
+                    $this->informOfRetry($retries);
+                }
             } while (in_array($httpStatus, self::$retryCodes) && (++$retries < $this->httpConfig->getHttpRetryCount()));
         }
         if (curl_errno($ch)) {
@@ -112,6 +123,16 @@ class PPHttpConnection
             throw $ex;
         }
         return $result;
+    }
+
+    private function informOfRetry($retries)
+    {
+        $retryCallback = $this->httpConfig->getRetryInformCallback();
+        if (!is_callable($retryCallback)) {
+            return;
+        }
+        $args = array($retries);
+        call_user_func_array($retryCallback, $args);
     }
 
 }

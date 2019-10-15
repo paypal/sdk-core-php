@@ -74,5 +74,30 @@ class PPConnectionManagerTest extends TestCase
         $this->assertTrue($conn instanceof PPHttpConnection);
         $this->assertEquals("PayPal\Core\PPHttpConnection", get_class($conn));
     }
+
+
+    /**
+     * @test
+     */
+    public function testGetConnectionSetsRetryInformCallbackAttribute()
+    {
+        $test = 0;
+
+        $configParams = $this->config;
+        $configParams['http.RetryInformCallback'] = function ($arg) use (&$test) {
+            $test = 1337;
+        };
+
+        $connection = $this->object->getConnection(new PPHttpConfig("http://domain.com"), $configParams);
+
+        $this->assertTrue(is_callable($connection->getHttpConfig()->getRetryInformCallback()));
+
+        $curlClientReflector = new \ReflectionClass($connection);
+        $informMethod = $curlClientReflector->getMethod('informOfRetry');
+        $informMethod->setAccessible(true);
+        $informMethod->invoke($connection, 1);
+
+        $this->assertEquals(1337, $test);
+    }
 }
 ?>
