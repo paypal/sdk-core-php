@@ -39,6 +39,12 @@ class PPHttpConfig
     private $retryCount;
 
     /**
+     * Consumer can choose to be informed when retries are attempted.
+     * @var callable|null
+     */
+    private $retryInformCallback;
+
+    /**
      *
      * @param string $url
      * @param string $method  HTTP method (GET, POST etc) defaults to POST
@@ -197,6 +203,16 @@ class PPHttpConfig
     public function getHttpRetryCount()
     {
         return $this->retryCount;
+    }
+
+    public function setRetryInformCallback(\Closure $callback)
+    {
+        $this->retryInformCallback = $callback;
+    }
+
+    public function getRetryInformCallback()
+    {
+        return $this->retryInformCallback;
     }
 
     /**
