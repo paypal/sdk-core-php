@@ -205,7 +205,7 @@ class PPHttpConfig
         return $this->retryCount;
     }
 
-    public function setRetryInformCallback(callable $callback)
+    public function setRetryInformCallback(\Closure $callback)
     {
         $this->retryInformCallback = $callback;
     }
